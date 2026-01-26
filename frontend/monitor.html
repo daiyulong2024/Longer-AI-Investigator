@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>实验实时执行监控 - Longer AI Investigator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101822",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .log-container::-webkit-scrollbar { width: 6px; }
+        .log-container::-webkit-scrollbar-track { background: transparent; }
+        .log-container::-webkit-scrollbar-thumb { background: #dbe0e6; border-radius: 10px; }
+        .pulse-dot { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-[#111418]">
+<div class="flex flex-col h-screen">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 bg-white dark:bg-background-dark dark:border-slate-800 px-10 py-3 shrink-0">
+    <a href="index.html" class="flex items-center gap-4 text-[#111418] dark:text-white">
+        <div class="size-6 text-primary">
+            <span class="material-symbols-outlined filled">science</span>
+        </div>
+        <h2 class="text-lg font-bold leading-tight tracking-tight">Longer AI Investigator</h2>
+    </a>
+    <div class="flex flex-1 justify-end gap-8">
+        <nav class="flex items-center gap-9">
+            <a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="index.html">仪表盘</a>
+            <a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="roles.html">实验设计</a>
+            <a class="text-primary text-sm font-bold border-b-2 border-primary" href="#">执行监控</a>
+        </nav>
+    </div>
+</header>
+<!-- Main Content Layout -->
+<main class="flex-1 flex overflow-hidden">
+    <!-- Left Sidebar / Logs Section -->
+    <div class="flex-1 flex flex-col p-6 overflow-hidden">
+        <!-- Page Heading -->
+        <div class="flex flex-wrap justify-between items-end gap-3 mb-6">
+            <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-2">
+                    <h1 class="text-[#111418] dark:text-white text-3xl font-black tracking-tight">实验实时执行监控</h1>
+                    <span id="status-badge" class="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-bold rounded flex items-center gap-1">
+                        <span class="size-1.5 bg-green-600 rounded-full pulse-dot"></span>
+                        正在运行
+                    </span>
+                </div>
+                <p id="experiment-title" class="text-slate-500 dark:text-slate-400 text-sm">Loading...</p>
+            </div>
+            <div class="flex gap-3">
+                <button id="view-report-btn" class="hidden flex items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold hover:opacity-90 transition-all shadow-sm">
+                    <span class="material-symbols-outlined mr-2 text-lg">analytics</span>
+                    查看统计报告
+                </button>
+            </div>
+        </div>
+        <!-- Progress Section -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 mb-6 shadow-sm">
+            <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#111418] dark:text-white text-base font-semibold">总体执行进度</span>
+                        <span id="progress-text" class="text-xs text-slate-400 font-mono">0 / 0</span>
+                    </div>
+                    <p id="progress-percent" class="text-primary text-lg font-black font-mono">0.0%</p>
+                </div>
+                <div class="h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                    <div id="progress-bar" class="h-full rounded-full bg-primary relative transition-all duration-300" style="width: 0%;"></div>
+                </div>
+                <div class="flex justify-between items-center text-xs text-slate-500">
+                     <p>Simulating Agents...</p>
+                </div>
+            </div>
+        </div>
+        <!-- Real-time Logs Terminal -->
+        <div class="flex-1 flex flex-col min-h-0 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+            <div class="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-slate-400 text-xl">terminal</span>
+                    <h2 class="text-sm font-bold text-slate-700 dark:text-slate-300 tracking-wide uppercase">实时决策日志</h2>
+                </div>
+            </div>
+            <div id="log-container" class="flex-1 overflow-y-auto log-container p-4 font-mono text-[13px] leading-relaxed">
+                <!-- Logs go here -->
+                <div class="text-center text-gray-400 mt-10">Waiting for start...</div>
+            </div>
+        </div>
+    </div>
+    <!-- Right Sidebar / Metrics -->
+    <div class="w-80 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark flex flex-col p-6 shrink-0 overflow-y-auto">
+        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">实时统计</h3>
+        <div class="space-y-4 mb-8" id="stats-container">
+            <!-- Dynamic stats -->
+        </div>
+    </div>
+</main>
+</div>
+<script src="js/app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const id = getQueryParam('id');
+        if (!id) {
+            alert("No experiment ID provided");
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        const experiment = getExperiment(id);
+        if (!experiment) {
+            alert("Experiment not found");
+            window.location.href = 'index.html';
+            return;
+        }
+
+        document.getElementById('experiment-title').innerText = `${experiment.config.personaName} (ID: ${id})`;
+        const logContainer = document.getElementById('log-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercent = document.getElementById('progress-percent');
+        const progressText = document.getElementById('progress-text');
+        const statsContainer = document.getElementById('stats-container');
+        const viewReportBtn = document.getElementById('view-report-btn');
+        const statusBadge = document.getElementById('status-badge');
+        
+        logContainer.innerHTML = ''; // clear
+
+        // If already completed, show report button immediately
+        if (experiment.status === 'completed') {
+             viewReportBtn.classList.remove('hidden');
+             viewReportBtn.onclick = () => window.location.href = `report.html?id=${id}`;
+             statusBadge.innerHTML = `<span class="material-symbols-outlined text-xs">check_circle</span> 已完成`;
+             statusBadge.className = "px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-bold rounded flex items-center gap-1";
+             updateUI(experiment);
+             return; 
+        }
+
+        // Run
+        runSimulation(id, (updatedExp) => {
+            updateUI(updatedExp);
+        }, (finalExp) => {
+            updateUI(finalExp);
+            viewReportBtn.classList.remove('hidden');
+             viewReportBtn.onclick = () => window.location.href = `report.html?id=${id}`;
+             statusBadge.innerHTML = `<span class="material-symbols-outlined text-xs">check_circle</span> 已完成`;
+             statusBadge.className = "px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-bold rounded flex items-center gap-1";
+        });
+
+        function updateUI(exp) {
+            const total = parseInt(exp.config.instanceCount);
+            const current = exp.stats.total;
+            const percent = ((current / total) * 100).toFixed(1);
+            
+            progressBar.style.width = `${percent}%`;
+            progressPercent.innerText = `${percent}%`;
+            progressText.innerText = `${current} / ${total}`;
+            
+            // Logs
+            const lastLog = exp.logs[exp.logs.length - 1];
+            if (lastLog) {
+                 const logHtml = `
+                    <div class="flex gap-4 p-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded group animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <span class="text-slate-400 shrink-0">${new Date(lastLog.timestamp).toLocaleTimeString()}</span>
+                        <span class="text-primary font-bold shrink-0">[${lastLog.agentId}]</span>
+                        <span class="text-slate-700 dark:text-slate-300">Selected <span class="font-bold text-primary">${lastLog.option}</span>: ${lastLog.reasoning}</span>
+                    </div>
+                `;
+                logContainer.insertAdjacentHTML('afterbegin', logHtml); // newest on top
+                // Limit logs
+                if (logContainer.children.length > 50) logContainer.lastElementChild.remove();
+            }
+
+            // Side Stats
+            let statsHtml = '';
+            for (const [opt, count] of Object.entries(exp.stats.options)) {
+                // Find option text
+                const optText = exp.config.options.find(o => o.key === opt)?.text || opt;
+                const ratio = ((count / total) * 100).toFixed(1);
+                statsHtml += `
+                 <div class="flex flex-col gap-2 rounded-xl p-4 border border-slate-200 dark:border-slate-800 bg-slate-50/50">
+                    <div class="flex justify-between items-center">
+                        <p class="text-slate-500 text-sm font-medium">Option ${opt}</p>
+                        <span class="font-bold text-lg">${count}</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div class="bg-primary h-2 rounded-full" style="width: ${ratio}%"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 truncate">${optText}</p>
+                </div>
+                `;
+            }
+            statsContainer.innerHTML = statsHtml;
+        }
+    });
+</script>
+</body>
+</html>

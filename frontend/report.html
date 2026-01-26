@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Longer AI Investigator - Statistical Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Sans+SC:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#136dec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101822",
+              "surface-light": "#ffffff",
+              "surface-dark": "#1a222d",
+            },
+            fontFamily: {
+              "display": ["Manrope", "Noto Sans SC", "sans-serif"],
+            },
+            borderRadius: { "DEFAULT": "0.375rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+          },
+        },
+      }
+    </script>
+<style>
+    body { font-family: 'Manrope', 'Noto Sans SC', sans-serif; }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white transition-colors duration-200">
+<div class="relative flex min-h-screen w-full flex-col">
+<!-- Navigation -->
+<header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-surface-light/95 dark:bg-surface-dark/95 backdrop-blur">
+    <div class="flex h-16 items-center justify-between px-4 md:px-10 max-w-[1400px] mx-auto w-full">
+        <a href="index.html" class="flex items-center gap-4">
+            <div class="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <span class="material-symbols-outlined filled">science</span>
+            </div>
+            <h2 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white hidden sm:block">Longer AI Investigator</h2>
+        </a>
+        <nav class="hidden md:flex flex-1 justify-center gap-8">
+            <a class="text-sm font-medium text-slate-500 hover:text-primary transition-colors" href="index.html">仪表盘</a>
+            <a class="text-sm font-medium text-slate-500 hover:text-primary transition-colors" href="roles.html">实验管理</a>
+            <a class="text-sm font-bold text-primary dark:text-primary" href="#">统计报告</a>
+        </nav>
+    </div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 px-4 py-8 md:px-10 md:py-10">
+    <div class="mx-auto flex max-w-[1200px] flex-col gap-8">
+        <!-- Page Header -->
+        <div class="flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-2 text-primary font-medium text-sm">
+                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    <a href="index.html">返回实验列表</a>
+                </div>
+                <h1 class="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white md:text-4xl">专业统计报告</h1>
+                <p class="text-slate-500 dark:text-slate-400 text-base">
+                    实验项目：<span id="exp-name" class="font-medium text-slate-700 dark:text-slate-200">Loading...</span>
+                </p>
+            </div>
+            <div class="flex items-center gap-3">
+                 <button onclick="window.print()" class="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-medium hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">print</span> 打印
+                </button>
+            </div>
+        </div>
+        <!-- Metrics -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div class="flex flex-col justify-between rounded-xl border border-slate-200 bg-surface-light p-6 shadow-sm">
+                <p class="text-sm font-medium text-slate-500">样本总数</p>
+                <span id="metric-total" class="text-3xl font-bold text-slate-900 mt-4">0</span>
+            </div>
+            <div class="flex flex-col justify-between rounded-xl border border-slate-200 bg-surface-light p-6 shadow-sm">
+                 <p class="text-sm font-medium text-slate-500">平均响应时间</p>
+                 <span id="metric-time" class="text-3xl font-bold text-slate-900 mt-4">0ms</span>
+            </div>
+            <div class="flex flex-col justify-between rounded-xl border border-slate-200 bg-surface-light p-6 shadow-sm">
+                 <p class="text-sm font-medium text-slate-500">主要倾向</p>
+                 <span id="metric-top" class="text-3xl font-bold text-primary mt-4">-</span>
+            </div>
+        </div>
+        <!-- Chart -->
+        <div class="rounded-xl border border-slate-200 bg-surface-light p-6 shadow-sm">
+            <h3 class="text-lg font-bold text-slate-900 mb-8">AI 选项分布</h3>
+            <div id="chart-container" class="flex h-[320px] w-full items-end justify-between gap-4 px-4 pb-4 border-b border-gray-100">
+                <!-- Bars dynamically injected -->
+            </div>
+        </div>
+        <!-- Table -->
+        <div class="rounded-xl border border-slate-200 bg-surface-light shadow-sm overflow-hidden">
+            <div class="border-b border-slate-200 px-6 py-4 bg-slate-50 flex justify-between items-center">
+                <h3 class="font-bold text-slate-900">详细记录</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-slate-500">
+                        <tr>
+                            <th class="px-6 py-3 font-medium">Agent ID</th>
+                            <th class="px-6 py-3 font-medium">选择</th>
+                            <th class="px-6 py-3 font-medium w-1/2">推理</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+             <div class="p-4 text-center text-xs text-gray-400">Showing first 100 records for performance</div>
+        </div>
+    </div>
+</main>
+</div>
+<script src="js/app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const id = getQueryParam('id');
+        if (!id) return;
+        const exp = getExperiment(id);
+        if (!exp) return;
+        
+        document.getElementById('exp-name').innerText = exp.config.personaName;
+        document.getElementById('metric-total').innerText = exp.stats.total;
+        
+        const avgTime = exp.stats.times.length ? (exp.stats.times.reduce((a,b)=>a+b,0) / exp.stats.times.length).toFixed(0) : 0;
+        document.getElementById('metric-time').innerText = avgTime + 'ms';
+        
+        let maxOpt = '';
+        let maxVal = -1;
+        for(const [k, v] of Object.entries(exp.stats.options)){
+            if(v > maxVal) { maxVal = v; maxOpt = k; }
+        }
+        document.getElementById('metric-top').innerText = `Option ${maxOpt}`;
+        
+        // Chart
+        const chartContainer = document.getElementById('chart-container');
+        let chartHtml = '';
+        const options = exp.config.options;
+        const total = exp.stats.total || 1;
+        
+        options.forEach(opt => {
+             const count = exp.stats.options[opt.key] || 0;
+             const percent = Math.round((count / total) * 100);
+             const height = Math.max(percent, 5); // min height
+             const isWinner = opt.key === maxOpt;
+             const colorClass = isWinner ? 'bg-primary' : 'bg-slate-200';
+             
+             chartHtml += `
+             <div class="group relative flex h-full flex-1 flex-col justify-end gap-2">
+                <div class="relative flex w-full flex-col justify-end overflow-hidden rounded-t-lg bg-slate-50 transition-all hover:bg-slate-100" style="height: 100%;">
+                    <div class="w-full ${colorClass} transition-all duration-500 relative" style="height: ${height}%;">
+                         <div class="absolute -top-8 w-full text-center text-xs font-bold text-slate-600">${percent}%</div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p class="text-lg font-bold text-slate-900">${opt.key}</p>
+                    <p class="text-xs font-medium text-slate-500 truncate w-full px-1" title="${opt.text}">${opt.text.substring(0, 10)}...</p>
+                </div>
+            </div>
+             `;
+        });
+        chartContainer.innerHTML = chartHtml;
+        
+        // Table
+        const tbody = document.getElementById('table-body');
+        let tableHtml = '';
+        // Show last 100
+        exp.logs.slice(-100).reverse().forEach(log => {
+             tableHtml += `
+             <tr class="hover:bg-slate-50">
+                <td class="px-6 py-3 font-mono text-xs">${log.agentId}</td>
+                <td class="px-6 py-3"><span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full text-xs font-bold">Option ${log.option}</span></td>
+                <td class="px-6 py-3 text-slate-600 truncate max-w-xs" title="${log.reasoning}">${log.reasoning}</td>
+             </tr>
+             `;
+        });
+        tbody.innerHTML = tableHtml;
+    });
+</script>
+</body>
+</html>

@@ -139,14 +139,14 @@ async function runSimulation(experimentId, onProgress, onComplete) {
 Persona: ${config.personaName || 'Unknown'}
 Background: ${config.backgroundStory || 'None'}
 Behavior Logic: ${config.behaviorLogic || 'Rational'}
- IMPORTANT: Output must be in valid JSON format: {"option": "KEY", "reasoning": "Reasoning in Chinese"}`;
+ IMPORTANT: Output must be in valid JSON format: {"option": "KEY", "reasoning": "Reasoning in Chinese"}. Do not use markdown code blocks (e.g. \`\`\`json). Output raw JSON only.`;
 
                 const userPrompt = `Scenario: ${config.scenarioDescription}
 Question: ${config.coreQuestion}
 Options:
 ${options.map(o => `${o.key}: ${o.text}`).join('\n')}
 
-Please make a choice. Output ONLY JSON.`;
+Please make a choice. Output ONLY raw JSON, no markdown formatting.`;
 
                 const start = Date.now();
                 const response = await fetch(`${baseUrl}/chat/completions`, {

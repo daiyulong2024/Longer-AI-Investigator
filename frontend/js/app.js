@@ -68,38 +68,110 @@ async function runSimulation(experimentId, onProgress, onComplete) {
     experiment.logs = [];
 
     // Mock API Call delay and response
+    // Real API Configuration
+    const apiKey = localStorage.getItem('openai_api_key');
+    
+    if (!apiKey) {
+        alert("请先配置 API 密钥！\n请前往 'API 密钥' 页面进行设置。");
+        return;
+    }
+
+    const baseUrl = localStorage.getItem('openai_base_url') || 'https://api.openai.com/v1';
+    const model = localStorage.getItem('openai_model') || 'gpt-3.5-turbo';
+
     const processAgent = async (index) => {
         const agentId = `AG-${Math.floor(Math.random()*9000)+1000}-${String.fromCharCode(65 + Math.floor(Math.random()*26))}`;
         
-        // Simulate network delay
-        const delay = Math.floor(Math.random() * 2000) + 500; // 500ms to 2.5s
-        await new Promise(r => setTimeout(r, delay));
-
-        // Mock Decision Logic based on Persona
-        // In a real app, this would call OpenAI API
+        // 1. Prepare Data
         const options = config.options || [];
-        // Extract option keys (A, B, C...)
         const optionKeys = options.map(o => o.key);
-        
-        // Bias random selection based on persona (simple keyword matching mock)
         let selectedKey = optionKeys[Math.floor(Math.random() * optionKeys.length)];
-        
-        // Simple logic to make it look "Assistant-like"
-        // If persona mentions "rational", maybe pick B (assuming B is rational) - just random for now but reproducible
-        const personaLower = (config.personaName || "").toLowerCase();
-        if (personaLower.includes('student') || personaLower.includes('中学生')) {
-            // Students might choose "peers" (C often in our design example)
-            if (optionKeys.includes('C') && Math.random() > 0.3) selectedKey = 'C';
+        let reasoning = "";
+        let delay = Math.floor(Math.random() * 2000) + 500;
+
+        // 2. Decide: Real API vs Mock
+        if (apiKey) {
+            try {
+                // Construct Prompt
+                const systemPrompt = `You are a participant in a social experiment. You need to act according to your persona and make a choice.
+Persona: ${config.personaName || 'Unknown'}
+Background: ${config.backgroundStory || 'None'}
+Behavior Logic: ${config.behaviorLogic || 'Rational'}
+ IMPORTANT: Output must be in valid JSON format: {"option": "KEY", "reasoning": "Reasoning in Chinese"}`;
+
+                const userPrompt = `Scenario: ${config.scenarioDescription}
+Question: ${config.coreQuestion}
+Options:
+${options.map(o => `${o.key}: ${o.text}`).join('\n')}
+
+Please make a choice. Output ONLY JSON.`;
+
+                const start = Date.now();
+                const response = await fetch(`${baseUrl}/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: [
+                            {role: "system", content: systemPrompt},
+                            {role: "user", content: userPrompt}
+                        ],
+                        temperature: 0.7,
+                        response_format: { type: "json_object" }
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const content = data.choices[0].message.content;
+                    delay = Date.now() - start;
+                    
+                    try {
+                        const parsed = JSON.parse(content);
+                        if (parsed.option && optionKeys.includes(parsed.option)) {
+                            selectedKey = parsed.option;
+                        }
+                        reasoning = parsed.reasoning || content;
+                    } catch (e) {
+                         // Fallback if not JSON
+                         reasoning = content;
+                         // Try to find option key in content
+                         const foundKey = optionKeys.find(k => content.includes(k));
+                         if(foundKey) selectedKey = foundKey;
+                    }
+                } else {
+                    console.error("API Error", response.status);
+                    reasoning = `(API Error: ${response.status}) 使用模拟数据`;
+                    // Fallback to mock logic below...
+                }
+            } catch (e) {
+                console.error("Network Error", e);
+                reasoning = `(Network Error) 使用模拟数据`;
+            }
         }
-        
-        const reasoningTemplates = [
-            "Based on the current situation, this seems like the safest bet.",
-            "Considering the long-term consequences, I opt for this.",
-            "My emotional state suggests this is the most comforting choice.",
-            "Logic dictates this is the optimal path.",
-            "I am following the crowd here."
-        ];
-        const reasoning = reasoningTemplates[Math.floor(Math.random() * reasoningTemplates.length)];
+
+        // 3. Fallback / Mock Logic (if reasoning still empty)
+        if (!reasoning) {
+            await new Promise(r => setTimeout(r, delay));
+            
+            // Bias random selection based on persona
+            const personaLower = (config.personaName || "").toLowerCase();
+            if ((personaLower.includes('student') || personaLower.includes('中学生')) && optionKeys.includes('C')) {
+                 if (Math.random() > 0.3) selectedKey = 'C';
+            }
+
+            const reasoningTemplates = [
+                "基于当前情况，这似乎是最安全的选择。",
+                "考虑到长期后果，我倾向于这个选项。",
+                "我的情绪状态表明这是最令人舒适的选择。",
+                "逻辑分析表明这是最优路径。",
+                "我选择跟随大众的趋势。"
+            ];
+            reasoning = reasoningTemplates[Math.floor(Math.random() * reasoningTemplates.length)];
+        }
 
         // Record Result
         const log = {
@@ -110,7 +182,7 @@ async function runSimulation(experimentId, onProgress, onComplete) {
             timestamp: new Date().toISOString()
         };
 
-        // Update local stat state (not saving to disk every time for performance, but here we Mock)
+        // Update local stat state
         experiment.logs.push(log);
         experiment.stats.total++;
         experiment.stats.options[selectedKey] = (experiment.stats.options[selectedKey] || 0) + 1;

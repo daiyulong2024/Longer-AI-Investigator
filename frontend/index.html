@@ -38,6 +38,19 @@
             stroke-dasharray: 100;
             stroke-dashoffset: 0;
         }
+        @keyframes bell-shake {
+            0% { transform: rotate(0); }
+            15% { transform: rotate(5deg); }
+            30% { transform: rotate(-5deg); }
+            45% { transform: rotate(4deg); }
+            60% { transform: rotate(-4deg); }
+            75% { transform: rotate(2deg); }
+            85% { transform: rotate(-2deg); }
+            100% { transform: rotate(0); }
+        }
+        .animate-bell-shake {
+            animation: bell-shake 2s infinite;
+        }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white min-h-screen flex font-display">
@@ -85,8 +98,9 @@
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <button class="size-10 rounded-lg bg-[#f0f2f4] dark:bg-[#2a3544] flex items-center justify-center text-[#111418] dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700">
+            <button id="notification-btn" class="relative size-10 rounded-lg bg-[#f0f2f4] dark:bg-[#2a3544] flex items-center justify-center text-[#111418] dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-all origin-top">
                 <span class="material-symbols-outlined">notifications</span>
+                <span id="notification-badge" class="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white border-2 border-white dark:border-[#161f2a] hidden">0</span>
             </button>
             <a href="design.html" class="bg-primary text-white px-5 h-10 rounded-lg flex items-center gap-2 text-sm font-bold shadow-sm shadow-primary/20 hover:bg-blue-600 transition-colors">
                 <span class="material-symbols-outlined text-xl">add</span>
@@ -135,6 +149,7 @@
         
         function renderExperiments(experiments) {
             let html = '';
+            let unviewedCount = 0;
             
             // Add "New" Card first
             html += `
@@ -151,6 +166,9 @@
                 experiments.forEach(exp => {
                     const isRunning = exp.status === 'running';
                     const isCompleted = exp.status === 'completed';
+                    const isUnviewed = isCompleted && !exp.viewed;
+                    
+                    if (isUnviewed) unviewedCount++;
                     
                     let statusBadge = '';
                     if (isRunning) statusBadge = `<div class="px-2.5 py-1 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1"><span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>运行中</div>`;
@@ -159,10 +177,17 @@
 
                     const link = isRunning ? `monitor.html?id=${exp.id}` : (isCompleted ? `report.html?id=${exp.id}` : `design.html?id=${exp.id}`);
                     const actionText = isRunning ? '查看监控' : (isCompleted ? '详情报告' : '继续编辑');
+                    // Add markExperimentViewed call for completed experiments
+                    const clickAttr = isCompleted ? `onclick="markExperimentViewed('${exp.id}')"` : '';
+                    
                     const title = exp.config.experimentName || (exp.config.personaName ? `${exp.config.personaName} 的抉择` : '未命名实验');
+                    
+                    // Card Dot
+                    const unviewedDot = isUnviewed ? `<div class="absolute -top-1 -left-1 size-3 rounded-full bg-red-500 border-2 border-white dark:border-[#161f2a]"></div>` : '';
 
                     html += `
-                    <div class="bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-5 hover:shadow-lg transition-all group flex flex-col">
+                    <div class="relative bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-5 hover:shadow-lg transition-all group flex flex-col">
+                        ${unviewedDot}
                         <div class="flex justify-between items-start mb-4">
                             ${statusBadge}
                             <button class="text-[#617289] hover:text-primary transition-colors"><span class="material-symbols-outlined">more_horiz</span></button>
@@ -180,7 +205,7 @@
                         </div>
                         <div class="mt-auto flex items-center justify-between pt-4 border-t border-[#dbe0e6] dark:border-[#2a3544]">
                             <span class="text-xs text-[#617289] dark:text-[#94a3b8]">${new Date(exp.createdAt).toLocaleDateString()}</span>
-                            <a href="${link}" class="flex items-center gap-1 text-primary text-sm font-bold hover:underline">
+                            <a href="${link}" ${clickAttr} class="flex items-center gap-1 text-primary text-sm font-bold hover:underline">
                                 ${actionText} <span class="material-symbols-outlined text-sm">arrow_forward</span>
                             </a>
                         </div>
@@ -189,6 +214,18 @@
                 });
             }
             grid.innerHTML = html;
+            
+            // Update Bell Notification
+            const badge = document.getElementById('notification-badge');
+            const btn = document.getElementById('notification-btn');
+            if (unviewedCount > 0) {
+                badge.innerText = unviewedCount > 99 ? '99+' : unviewedCount;
+                badge.classList.remove('hidden');
+                btn.classList.add('animate-bell-shake');
+            } else {
+                badge.classList.add('hidden');
+                btn.classList.remove('animate-bell-shake');
+            }
         }
 
         // Initial Render

@@ -32,6 +32,15 @@ function  saveExperiment(experiment) {
     saveExperiments(exps);
 }
 
+function markExperimentViewed(id) {
+    const exps = getExperiments();
+    const exp = exps.find(e => e.id === id);
+    if (exp) {
+        exp.viewed = true;
+        saveExperiments(exps);
+    }
+}
+
 function createExperiment(config) {
     const id = 'EXP-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
     const experiment = {

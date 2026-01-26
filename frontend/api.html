@@ -72,22 +72,34 @@
             </div>
 
             <div class="mb-6">
-                <label class="block text-sm font-bold mb-2">OpenAI API Key (Mock Config)</label>
+                <label class="block text-sm font-bold mb-2">OpenAI API Key</label>
                 <div class="relative">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined">vpn_key</span>
                     <input id="api-key-input" type="password" class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="sk-..." />
                 </div>
-                <p class="text-xs text-gray-500 mt-2">密钥仅在本地浏览器存储，不会发送到任何服务器。</p>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-bold mb-2">Model Name</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined">smart_toy</span>
+                    <input id="api-model-input" type="text" class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="gpt-3.5-turbo" value="gpt-3.5-turbo" />
+                </div>
             </div>
             
-            <button onclick="saveKey()" class="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined">save</span> 保存配置
-            </button>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button onclick="testConnection()" id="test-btn" class="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[#111418] dark:text-white font-bold py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">network_check</span> 连接测试
+                </button>
+                <button onclick="saveKey()" class="flex-1 bg-primary text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">save</span> 保存配置
+                </button>
+            </div>
         </div>
         
         <div id="toast" class="fixed bottom-10 right-10 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2">
             <span class="material-symbols-outlined">check_circle</span>
-            设置已保存
+            <span id="toast-message">设置已保存</span>
         </div>
     </div>
 </main>
@@ -96,22 +108,92 @@
     document.addEventListener('DOMContentLoaded', () => {
         const key = localStorage.getItem('openai_api_key') || '';
         const url = localStorage.getItem('openai_base_url') || '';
+        const model = localStorage.getItem('openai_model') || 'gpt-3.5-turbo';
+        
         document.getElementById('api-key-input').value = key;
         document.getElementById('api-url-input').value = url;
+        document.getElementById('api-model-input').value = model;
     });
 
-    function saveKey() {
-        const key = document.getElementById('api-key-input').value;
-        const url = document.getElementById('api-url-input').value;
-        localStorage.setItem('openai_api_key', key);
-        localStorage.setItem('openai_base_url', url);
-        
-        // Show Toast
+    function showToast(message, type = 'success') {
         const toast = document.getElementById('toast');
+        const msgSpan = document.getElementById('toast-message');
+        
+        msgSpan.innerText = message;
+        if (type === 'error') {
+            toast.classList.remove('bg-green-600');
+            toast.classList.add('bg-red-600');
+        } else {
+            toast.classList.remove('bg-red-600');
+            toast.classList.add('bg-green-600');
+        }
+
         toast.classList.remove('translate-y-20', 'opacity-0');
         setTimeout(() => {
             toast.classList.add('translate-y-20', 'opacity-0');
         }, 3000);
+    }
+
+    function saveKey() {
+        const key = document.getElementById('api-key-input').value;
+        const url = document.getElementById('api-url-input').value;
+        const model = document.getElementById('api-model-input').value;
+        
+        localStorage.setItem('openai_api_key', key);
+        localStorage.setItem('openai_base_url', url);
+        localStorage.setItem('openai_model', model);
+        
+        showToast('设置已保存');
+    }
+
+    async function testConnection() {
+        const key = document.getElementById('api-key-input').value;
+        let url = document.getElementById('api-url-input').value;
+        const model = document.getElementById('api-model-input').value;
+        const btn = document.getElementById('test-btn');
+        const originalText = btn.innerHTML;
+
+        if (!key) {
+            showToast('请先输入 API Key', 'error');
+            return;
+        }
+
+        // Normalize URL
+        if (!url) url = 'https://api.openai.com/v1';
+        if (url.endsWith('/')) url = url.slice(0, -1);
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> 测试中...';
+
+        try {
+            const response = await fetch(`${url}/chat/completions`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${key}`
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: [{role: "user", content: "Hi"}],
+                    max_tokens: 5
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                showToast(`连接成功! 响应: ${data.choices?.[0]?.message?.content || 'OK'}`);
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                console.error(errorData);
+                showToast(`连接失败: ${response.status} ${errorData.error?.message || response.statusText}`, 'error');
+            }
+        } catch (error) {
+            console.error(error);
+            showToast(`网络错误: ${error.message}. 请检查 Base URL 是否允许 CORS。`, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
     }
 </script>
 </body>

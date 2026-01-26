@@ -118,8 +118,10 @@
                     <p class="text-[#617289] dark:text-[#94a3b8] text-base">监控 AI Agent 社会实验运行状态，深度分析群体决策路径。</p>
                 </div>
                 <div class="flex gap-2">
-                    <button class="px-4 py-2 text-sm font-bold border border-[#dbe0e6] dark:border-[#2a3544] rounded-lg hover:bg-white dark:hover:bg-[#161f2a]">导出报告</button>
-                    <button class="px-4 py-2 text-sm font-bold bg-[#f0f2f4] dark:bg-[#2a3544] rounded-lg">批量管理</button>
+                    <button id="btn-delete-selected" class="hidden px-4 py-2 text-sm font-bold bg-red-100 text-red-600 hover:bg-red-200 rounded-lg flex items-center gap-1 transition-colors">
+                        <span class="material-symbols-outlined text-sm">delete</span> 确认删除
+                    </button>
+                    <button id="btn-batch-mode" class="px-4 py-2 text-sm font-bold bg-[#f0f2f4] dark:bg-[#2a3544] rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">批量管理</button>
                 </div>
             </div>
         </div>
@@ -149,13 +151,15 @@
         
         // Global Filter State
         let currentFilter = 'all';
+        let isBatchMode = false;
+        let selectedExpIds = new Set();
         
         function renderExperiments(experiments) {
             let html = '';
             let unviewedCount = 0;
             
-            // Add "New" Card first ONLY if filter is 'all'
-            if (currentFilter === 'all') {
+            // Add "New" Card first ONLY if filter is 'all' AND not in batch mode
+            if (currentFilter === 'all' && !isBatchMode) {
                 html += `
                 <a href="design.html" class="border-2 border-dashed border-[#dbe0e6] dark:border-[#2a3544] rounded-xl flex flex-col items-center justify-center p-8 bg-white/50 dark:bg-[#161f2a]/50 hover:border-primary/50 transition-colors cursor-pointer group min-h-[280px]">
                     <div class="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -188,14 +192,26 @@
                     const title = exp.config.experimentName || (exp.config.personaName ? `${exp.config.personaName} 的抉择` : '未命名实验');
                     
                     // Card Dot
-                    const unviewedDot = isUnviewed ? `<div class="absolute -top-1 -left-1 size-3 rounded-full bg-red-500 border-2 border-white dark:border-[#161f2a]"></div>` : '';
+                    const unviewedDot = (isUnviewed && !isBatchMode) ? `<div class="absolute -top-1 -left-1 size-3 rounded-full bg-red-500 border-2 border-white dark:border-[#161f2a]"></div>` : '';
+                    
+                    // Batch Checkbox
+                    let batchCheckbox = '';
+                    if (isBatchMode) {
+                        const isChecked = selectedExpIds.has(exp.id) ? 'checked' : '';
+                        batchCheckbox = `
+                        <div class="absolute top-5 right-5 z-20" onclick="event.stopPropagation()">
+                             <input type="checkbox" class="size-5 rounded border-gray-300 text-primary focus:ring-primary" ${isChecked} onchange="toggleSelection('${exp.id}', this.checked)">
+                        </div>
+                        `;
+                    }
 
                     html += `
-                    <div class="relative bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-5 hover:shadow-lg transition-all group flex flex-col">
+                    <div class="relative bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-5 hover:shadow-lg transition-all group flex flex-col ${isBatchMode ? 'cursor-default' : ''}">
                         ${unviewedDot}
+                        ${batchCheckbox}
                         <div class="flex justify-between items-start mb-4 relative">
                             ${statusBadge}
-                            <div class="relative">
+                            <div class="relative ${isBatchMode ? 'invisible' : ''}">
                                 <button onclick="toggleMenu('${exp.id}', event)" class="text-[#617289] hover:text-primary transition-colors p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"><span class="material-symbols-outlined">more_horiz</span></button>
                                 <!-- Dropdown Menu -->
                                 <div id="menu-${exp.id}" class="absolute right-0 top-8 w-32 bg-white dark:bg-[#1f2937] rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 z-10 hidden overflow-hidden">
@@ -328,6 +344,60 @@
         // Close menus when clicking outside
         document.addEventListener('click', () => {
              document.querySelectorAll('[id^="menu-"]').forEach(el => el.classList.add('hidden'));
+        });
+        
+        // --- Batch Mode Logic ---
+        const btnBatch = document.getElementById('btn-batch-mode');
+        const btnDeleteSelected = document.getElementById('btn-delete-selected');
+        
+        btnBatch.addEventListener('click', () => {
+            isBatchMode = !isBatchMode;
+            if (isBatchMode) {
+                btnBatch.innerText = '取消管理';
+                btnBatch.classList.add('text-red-500');
+                btnDeleteSelected.classList.remove('hidden');
+            } else {
+                btnBatch.innerText = '批量管理';
+                btnBatch.classList.remove('text-red-500');
+                btnDeleteSelected.classList.add('hidden');
+                selectedExpIds.clear();
+            }
+            setActiveTab(currentFilter); // Re-render
+        });
+        
+        window.toggleSelection = function(id, checked) {
+            if (checked) selectedExpIds.add(id);
+            else selectedExpIds.delete(id);
+            
+            // Update delete button text
+            const count = selectedExpIds.size;
+            btnDeleteSelected.innerHTML = `<span class="material-symbols-outlined text-sm">delete</span> 删除选中 (${count})`;
+        };
+        
+        btnDeleteSelected.addEventListener('click', () => {
+             if (selectedExpIds.size === 0) return;
+             
+             if(confirm(`确定要删除选中的 ${selectedExpIds.size} 个实验吗？`)) {
+                 selectedExpIds.forEach(id => deleteExperiment(id));
+                 
+                 // Update data
+                 const ids = Array.from(selectedExpIds);
+                 for (let i = allExperiments.length - 1; i >= 0; i--) {
+                     if (ids.includes(allExperiments[i].id)) {
+                         allExperiments.splice(i, 1);
+                     }
+                 }
+                 
+                 // Reset Mode
+                 isBatchMode = false;
+                 selectedExpIds.clear();
+                 btnBatch.innerText = '批量管理';
+                 btnBatch.classList.remove('text-red-500');
+                 btnDeleteSelected.classList.add('hidden');
+                 btnDeleteSelected.innerHTML = `<span class="material-symbols-outlined text-sm">delete</span> 确认删除`;
+                 
+                 setActiveTab(currentFilter);
+             }
         });
     });
 </script>

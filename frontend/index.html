@@ -208,8 +208,9 @@
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             const filtered = allExperiments.filter(exp => {
-                const name = (exp.config.personaName || '').toLowerCase();
-                return name.includes(query);
+                const persona = (exp.config.personaName || '').toLowerCase();
+                const expName = (exp.config.experimentName || '').toLowerCase();
+                return persona.includes(query) || expName.includes(query);
             });
             renderExperiments(filtered);
         });

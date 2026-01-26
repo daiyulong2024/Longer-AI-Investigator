@@ -64,6 +64,14 @@
         
         <div class="bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-8 shadow-sm">
             <div class="mb-6">
+                <label class="block text-sm font-bold mb-2">OpenAI Base URL (Optional)</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined">link</span>
+                    <input id="api-url-input" type="text" class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="https://api.openai.com/v1" />
+                </div>
+            </div>
+
+            <div class="mb-6">
                 <label class="block text-sm font-bold mb-2">OpenAI API Key (Mock Config)</label>
                 <div class="relative">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined">vpn_key</span>
@@ -87,12 +95,16 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const key = localStorage.getItem('openai_api_key') || '';
+        const url = localStorage.getItem('openai_base_url') || '';
         document.getElementById('api-key-input').value = key;
+        document.getElementById('api-url-input').value = url;
     });
 
     function saveKey() {
         const key = document.getElementById('api-key-input').value;
+        const url = document.getElementById('api-url-input').value;
         localStorage.setItem('openai_api_key', key);
+        localStorage.setItem('openai_base_url', url);
         
         // Show Toast
         const toast = document.getElementById('toast');

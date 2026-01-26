@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>系统设置 - Longer AI Investigator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101822",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white min-h-screen flex font-display transition-colors duration-300">
+<!-- Sidebar Navigation -->
+<aside class="w-64 border-r border-[#dbe0e6] dark:border-[#2a3544] bg-white dark:bg-[#161f2a] flex flex-col fixed h-full z-20">
+    <div class="p-6">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                <span class="material-symbols-outlined text-xl">psychology_alt</span>
+            </div>
+            <div>
+                <h1 class="text-[#111418] dark:text-white text-base font-bold leading-tight">Longer AI</h1>
+                <p class="text-[#617289] dark:text-[#94a3b8] text-xs font-normal">Investigator Pro</p>
+            </div>
+        </div>
+        <nav class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617289] dark:text-[#94a3b8] hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="index.html">
+                <span class="material-symbols-outlined text-[22px]">grid_view</span>
+                <span class="text-sm font-medium">项目管理</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617289] dark:text-[#94a3b8] hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="roles.html">
+                <span class="material-symbols-outlined text-[22px]">description</span>
+                <span class="text-sm font-medium">实验模板</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617289] dark:text-[#94a3b8] hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="api.html">
+                <span class="material-symbols-outlined text-[22px]">key</span>
+                <span class="text-sm font-medium">API 密钥</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary" href="settings.html">
+                <span class="material-symbols-outlined text-[22px] font-variation-fill">settings</span>
+                <span class="text-sm font-semibold">系统设置</span>
+            </a>
+        </nav>
+    </div>
+</aside>
+<main class="ml-64 flex-1 flex flex-col min-h-screen p-8">
+    <div class="max-w-2xl mx-auto w-full mt-10">
+        <h1 class="text-3xl font-black mb-6">系统设置</h1>
+        
+        <div class="flex flex-col gap-6">
+            <!-- Appearance -->
+            <div class="bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-6 shadow-sm">
+                <h2 class="text-xl font-bold mb-4">外观</h2>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-medium">夜间模式 (Dark Mode)</p>
+                        <p class="text-sm text-gray-500">切换应用的深浅色主题</p>
+                    </div>
+                    <button onclick="toggleTheme()" class="relative inline-flex items-center cursor-pointer">
+                        <input id="theme-toggle" type="checkbox" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Data Management -->
+            <div class="bg-white dark:bg-[#161f2a] rounded-xl border border-red-200 dark:border-red-900/30 p-6 shadow-sm">
+                <h2 class="text-xl font-bold mb-4 text-red-600">数据管理</h2>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="font-medium">重置所有数据</p>
+                        <p class="text-sm text-gray-500">清除所有本地缓存的实验数据和配置</p>
+                    </div>
+                    <button onclick="clearData()" class="px-4 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 font-bold transition-colors">
+                        立即清除
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="js/app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Theme Check
+        const isDark = document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
+        document.getElementById('theme-toggle').checked = isDark;
+        if(isDark) document.documentElement.classList.add('dark');
+        
+        document.getElementById('theme-toggle').addEventListener('change', (e) => {
+            if(e.target.checked) {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    });
+
+    function toggleTheme() {
+        // Triggered by checkbox change listener
+    }
+
+    function clearData() {
+        if(confirm('确定要清除所有数据吗？此操作无法撤销。')) {
+            localStorage.clear();
+            alert('数据已清除');
+            window.location.reload();
+        }
+    }
+</script>
+</body>
+</html>

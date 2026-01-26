@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>API 密钥管理 - Longer AI Investigator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101822",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white min-h-screen flex font-display">
+<!-- Sidebar Navigation -->
+<aside class="w-64 border-r border-[#dbe0e6] dark:border-[#2a3544] bg-white dark:bg-[#161f2a] flex flex-col fixed h-full z-20">
+    <div class="p-6">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                <span class="material-symbols-outlined text-xl">psychology_alt</span>
+            </div>
+            <div>
+                <h1 class="text-[#111418] dark:text-white text-base font-bold leading-tight">Longer AI</h1>
+                <p class="text-[#617289] dark:text-[#94a3b8] text-xs font-normal">Investigator Pro</p>
+            </div>
+        </div>
+        <nav class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617289] dark:text-[#94a3b8] hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="index.html">
+                <span class="material-symbols-outlined text-[22px]">grid_view</span>
+                <span class="text-sm font-medium">项目管理</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617289] dark:text-[#94a3b8] hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="roles.html">
+                <span class="material-symbols-outlined text-[22px]">description</span>
+                <span class="text-sm font-medium">实验模板</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary" href="api.html">
+                <span class="material-symbols-outlined text-[22px] font-variation-fill">key</span>
+                <span class="text-sm font-semibold">API 密钥</span>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617289] dark:text-[#94a3b8] hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="settings.html">
+                <span class="material-symbols-outlined text-[22px]">settings</span>
+                <span class="text-sm font-medium">系统设置</span>
+            </a>
+        </nav>
+    </div>
+</aside>
+<main class="ml-64 flex-1 flex flex-col min-h-screen p-8">
+    <div class="max-w-2xl mx-auto w-full mt-10">
+        <h1 class="text-3xl font-black mb-6">API 密钥管理</h1>
+        
+        <div class="bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-8 shadow-sm">
+            <div class="mb-6">
+                <label class="block text-sm font-bold mb-2">OpenAI API Key (Mock Config)</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined">vpn_key</span>
+                    <input id="api-key-input" type="password" class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="sk-..." />
+                </div>
+                <p class="text-xs text-gray-500 mt-2">密钥仅在本地浏览器存储，不会发送到任何服务器。</p>
+            </div>
+            
+            <button onclick="saveKey()" class="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined">save</span> 保存配置
+            </button>
+        </div>
+        
+        <div id="toast" class="fixed bottom-10 right-10 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2">
+            <span class="material-symbols-outlined">check_circle</span>
+            设置已保存
+        </div>
+    </div>
+</main>
+<script src="js/app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const key = localStorage.getItem('openai_api_key') || '';
+        document.getElementById('api-key-input').value = key;
+    });
+
+    function saveKey() {
+        const key = document.getElementById('api-key-input').value;
+        localStorage.setItem('openai_api_key', key);
+        
+        // Show Toast
+        const toast = document.getElementById('toast');
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        setTimeout(() => {
+            toast.classList.add('translate-y-20', 'opacity-0');
+        }, 3000);
+    }
+</script>
+</body>
+</html>

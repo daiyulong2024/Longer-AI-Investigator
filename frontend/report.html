@@ -65,8 +65,8 @@
                 </p>
             </div>
             <div class="flex items-center gap-3">
-                 <button onclick="window.print()" class="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-medium hover:bg-slate-50 transition-colors">
-                    <span class="material-symbols-outlined text-[18px]">print</span> 打印
+                <button id="btn-export" class="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-medium hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">download</span> 导出
                 </button>
             </div>
         </div>
@@ -119,6 +119,13 @@
     document.addEventListener('DOMContentLoaded', () => {
         const id = getQueryParam('id');
         if (!id) return;
+        
+        // Bind Export Button
+        const exportBtn = document.getElementById('btn-export');
+        if(exportBtn) {
+            exportBtn.onclick = () => exportExperiment(id);
+        }
+
         const exp = getExperiment(id);
         if (!exp) return;
         

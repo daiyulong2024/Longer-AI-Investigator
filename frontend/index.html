@@ -193,9 +193,20 @@
                     html += `
                     <div class="relative bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-5 hover:shadow-lg transition-all group flex flex-col">
                         ${unviewedDot}
-                        <div class="flex justify-between items-start mb-4">
+                        <div class="flex justify-between items-start mb-4 relative">
                             ${statusBadge}
-                            <button class="text-[#617289] hover:text-primary transition-colors"><span class="material-symbols-outlined">more_horiz</span></button>
+                            <div class="relative">
+                                <button onclick="toggleMenu('${exp.id}', event)" class="text-[#617289] hover:text-primary transition-colors p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"><span class="material-symbols-outlined">more_horiz</span></button>
+                                <!-- Dropdown Menu -->
+                                <div id="menu-${exp.id}" class="absolute right-0 top-8 w-32 bg-white dark:bg-[#1f2937] rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 z-10 hidden overflow-hidden">
+                                    <button onclick="handleExport('${exp.id}')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-base">download</span> 导出
+                                    </button>
+                                    <button onclick="handleDelete('${exp.id}')" class="w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-base">delete</span> 删除
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <h3 class="text-lg font-bold text-[#111418] dark:text-white mb-4 group-hover:text-primary transition-colors">${title}</h3>
                         <div class="grid grid-cols-2 gap-4 mb-6">
@@ -281,6 +292,43 @@
         tabs.all.addEventListener('click', () => setActiveTab('all'));
         tabs.running.addEventListener('click', () => setActiveTab('running'));
         tabs.completed.addEventListener('click', () => setActiveTab('completed'));
+        
+        // --- Menu Logic ---
+        window.toggleMenu = function(id, event) {
+            event.stopPropagation();
+            event.preventDefault(); // Prevent link click if nested
+            
+            // Close all other menus
+            document.querySelectorAll('[id^="menu-"]').forEach(el => {
+                if (el.id !== `menu-${id}`) el.classList.add('hidden');
+            });
+            
+            const menu = document.getElementById(`menu-${id}`);
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
+        };
+        
+        window.handleExport = function(id) {
+            exportExperiment(id);
+            // Close menu
+            document.getElementById(`menu-${id}`).classList.add('hidden');
+        };
+        
+        window.handleDelete = function(id) {
+            if(confirm('确定要删除这个实验吗？此操作无法撤销。')) {
+                deleteExperiment(id);
+                // Refresh list
+                const idx = allExperiments.findIndex(e => e.id === id);
+                if (idx > -1) allExperiments.splice(idx, 1);
+                setActiveTab(currentFilter); // Re-render
+            }
+        };
+         
+        // Close menus when clicking outside
+        document.addEventListener('click', () => {
+             document.querySelectorAll('[id^="menu-"]').forEach(el => el.classList.add('hidden'));
+        });
     });
 </script>
 </body>

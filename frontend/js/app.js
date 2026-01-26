@@ -32,6 +32,39 @@ function  saveExperiment(experiment) {
     saveExperiments(exps);
 }
 
+function deleteExperiment(id) {
+    let exps = getExperiments();
+    exps = exps.filter(e => e.id !== id);
+    saveExperiments(exps);
+}
+
+function exportExperiment(id) {
+    const exp = getExperiment(id);
+    if (!exp) return;
+    
+    // CSV Header
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "AgentID,Persona,Option,Reasoning,Time(ms),Timestamp\n";
+    
+    // Rows
+    if (exp.logs && exp.logs.length > 0) {
+        exp.logs.forEach(log => {
+            // Escape special chars in reasoning (commas, quotes, newlines)
+            const safeReasoning = `"${(log.reasoning || '').replace(/"/g, '""')}"`;
+            const row = `${log.agentId},${exp.config.personaName},${log.option},${safeReasoning},${log.time},${log.timestamp}`;
+            csvContent += row + "\n";
+        });
+    }
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `experiment_${exp.config.experimentName || id}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 function markExperimentViewed(id) {
     const exps = getExperiments();
     const exp = exps.find(e => e.id === id);

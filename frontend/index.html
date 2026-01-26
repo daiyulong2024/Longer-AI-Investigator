@@ -91,7 +91,7 @@
         <div class="flex items-center gap-4 flex-1">
             <div class="relative w-full max-w-md">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#617289] text-xl">search</span>
-                <input class="w-full bg-[#f0f2f4] dark:bg-[#2a3544] border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary dark:text-white placeholder:text-[#617289]" placeholder="搜索实验..." type="text"/>
+                <input id="search-input" class="w-full bg-[#f0f2f4] dark:bg-[#2a3544] border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary dark:text-white placeholder:text-[#617289]" placeholder="搜索实验..." type="text"/>
             </div>
         </div>
         <div class="flex items-center gap-3">
@@ -140,64 +140,79 @@
     // Dashboard Logic
     document.addEventListener('DOMContentLoaded', () => {
         const grid = document.getElementById('experiments-grid');
-        const experiments = getExperiments();
+        const searchInput = document.getElementById('search-input');
+        const allExperiments = getExperiments().reverse();
         
-        let html = '';
-        
-        // Add "New" Card first
-        html += `
-        <a href="design.html" class="border-2 border-dashed border-[#dbe0e6] dark:border-[#2a3544] rounded-xl flex flex-col items-center justify-center p-8 bg-white/50 dark:bg-[#161f2a]/50 hover:border-primary/50 transition-colors cursor-pointer group min-h-[280px]">
-            <div class="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined text-3xl">add</span>
-            </div>
-            <p class="text-base font-bold text-[#111418] dark:text-white">创建新调查</p>
-            <p class="text-sm text-[#617289] dark:text-gray-400 mt-1 text-center">开始您的第一个 AI 社会学实验</p>
-        </a>
-        `;
-
-        if (experiments.length > 0) {
-            experiments.reverse().forEach(exp => {
-                const isRunning = exp.status === 'running';
-                const isCompleted = exp.status === 'completed';
-                
-                let statusBadge = '';
-                if (isRunning) statusBadge = `<div class="px-2.5 py-1 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1"><span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>运行中</div>`;
-                else if (isCompleted) statusBadge = `<div class="px-2.5 py-1 rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1"><span class="material-symbols-outlined text-xs">check_circle</span>已完成</div>`;
-                else statusBadge = `<div class="px-2.5 py-1 rounded bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1"><span class="material-symbols-outlined text-xs">edit_note</span>草稿</div>`;
-
-                const link = isRunning ? `monitor.html?id=${exp.id}` : (isCompleted ? `report.html?id=${exp.id}` : `design.html?id=${exp.id}`);
-                const actionText = isRunning ? '查看监控' : (isCompleted ? '详情报告' : '继续编辑');
-                const title = exp.config.personaName ? `${exp.config.personaName} 的抉择` : '未命名实验';
-
-                html += `
-                <div class="bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-5 hover:shadow-lg transition-all group flex flex-col">
-                    <div class="flex justify-between items-start mb-4">
-                        ${statusBadge}
-                        <button class="text-[#617289] hover:text-primary transition-colors"><span class="material-symbols-outlined">more_horiz</span></button>
-                    </div>
-                    <h3 class="text-lg font-bold text-[#111418] dark:text-white mb-4 group-hover:text-primary transition-colors">${title}</h3>
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="bg-background-light dark:bg-[#2a3544] p-3 rounded-lg">
-                            <p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-1">角色</p>
-                            <div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-primary">person</span><p class="text-sm font-bold truncate">${exp.config.personaName || 'Unknown'}</p></div>
-                        </div>
-                        <div class="bg-background-light dark:bg-[#2a3544] p-3 rounded-lg">
-                            <p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-1">数量</p>
-                            <div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-primary">groups</span><p class="text-sm font-bold">${exp.config.instanceCount} Agents</p></div>
-                        </div>
-                    </div>
-                    <div class="mt-auto flex items-center justify-between pt-4 border-t border-[#dbe0e6] dark:border-[#2a3544]">
-                        <span class="text-xs text-[#617289] dark:text-[#94a3b8]">${new Date(exp.createdAt).toLocaleDateString()}</span>
-                        <a href="${link}" class="flex items-center gap-1 text-primary text-sm font-bold hover:underline">
-                            ${actionText} <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                        </a>
-                    </div>
+        function renderExperiments(experiments) {
+            let html = '';
+            
+            // Add "New" Card first
+            html += `
+            <a href="design.html" class="border-2 border-dashed border-[#dbe0e6] dark:border-[#2a3544] rounded-xl flex flex-col items-center justify-center p-8 bg-white/50 dark:bg-[#161f2a]/50 hover:border-primary/50 transition-colors cursor-pointer group min-h-[280px]">
+                <div class="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-3xl">add</span>
                 </div>
-                `;
-            });
+                <p class="text-base font-bold text-[#111418] dark:text-white">创建新调查</p>
+                <p class="text-sm text-[#617289] dark:text-gray-400 mt-1 text-center">开始您的第一个 AI 社会学实验</p>
+            </a>
+            `;
+
+            if (experiments.length > 0) {
+                experiments.forEach(exp => {
+                    const isRunning = exp.status === 'running';
+                    const isCompleted = exp.status === 'completed';
+                    
+                    let statusBadge = '';
+                    if (isRunning) statusBadge = `<div class="px-2.5 py-1 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1"><span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>运行中</div>`;
+                    else if (isCompleted) statusBadge = `<div class="px-2.5 py-1 rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1"><span class="material-symbols-outlined text-xs">check_circle</span>已完成</div>`;
+                    else statusBadge = `<div class="px-2.5 py-1 rounded bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1"><span class="material-symbols-outlined text-xs">edit_note</span>草稿</div>`;
+
+                    const link = isRunning ? `monitor.html?id=${exp.id}` : (isCompleted ? `report.html?id=${exp.id}` : `design.html?id=${exp.id}`);
+                    const actionText = isRunning ? '查看监控' : (isCompleted ? '详情报告' : '继续编辑');
+                    const title = exp.config.personaName ? `${exp.config.personaName} 的抉择` : '未命名实验';
+
+                    html += `
+                    <div class="bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-5 hover:shadow-lg transition-all group flex flex-col">
+                        <div class="flex justify-between items-start mb-4">
+                            ${statusBadge}
+                            <button class="text-[#617289] hover:text-primary transition-colors"><span class="material-symbols-outlined">more_horiz</span></button>
+                        </div>
+                        <h3 class="text-lg font-bold text-[#111418] dark:text-white mb-4 group-hover:text-primary transition-colors">${title}</h3>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-background-light dark:bg-[#2a3544] p-3 rounded-lg">
+                                <p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-1">角色</p>
+                                <div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-primary">person</span><p class="text-sm font-bold truncate">${exp.config.personaName || 'Unknown'}</p></div>
+                            </div>
+                            <div class="bg-background-light dark:bg-[#2a3544] p-3 rounded-lg">
+                                <p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-1">数量</p>
+                                <div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-primary">groups</span><p class="text-sm font-bold">${exp.config.instanceCount} Agents</p></div>
+                            </div>
+                        </div>
+                        <div class="mt-auto flex items-center justify-between pt-4 border-t border-[#dbe0e6] dark:border-[#2a3544]">
+                            <span class="text-xs text-[#617289] dark:text-[#94a3b8]">${new Date(exp.createdAt).toLocaleDateString()}</span>
+                            <a href="${link}" class="flex items-center gap-1 text-primary text-sm font-bold hover:underline">
+                                ${actionText} <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </a>
+                        </div>
+                    </div>
+                    `;
+                });
+            }
+            grid.innerHTML = html;
         }
-        
-        grid.innerHTML = html;
+
+        // Initial Render
+        renderExperiments(allExperiments);
+
+        // Search Listener
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = allExperiments.filter(exp => {
+                const name = (exp.config.personaName || '').toLowerCase();
+                return name.includes(query);
+            });
+            renderExperiments(filtered);
+        });
     });
 </script>
 </body>

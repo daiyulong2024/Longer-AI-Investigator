@@ -125,9 +125,9 @@
         </div>
         <!-- Tabs Section -->
         <div class="mb-6 flex border-b border-[#dbe0e6] dark:border-[#2a3544]">
-            <button class="px-6 py-3 text-sm font-bold border-b-2 border-primary text-primary">全部实验</button>
-            <button class="px-6 py-3 text-sm font-medium text-[#617289] dark:text-[#94a3b8] hover:text-[#111418] dark:hover:text-white">进行中</button>
-            <button class="px-6 py-3 text-sm font-medium text-[#617289] dark:text-[#94a3b8] hover:text-[#111418] dark:hover:text-white">已完成</button>
+            <button id="tab-all" class="px-6 py-3 text-sm font-bold border-b-2 border-primary text-primary transition-colors">全部实验</button>
+            <button id="tab-running" class="px-6 py-3 text-sm font-medium text-[#617289] dark:text-[#94a3b8] hover:text-[#111418] dark:hover:text-white border-b-2 border-transparent transition-colors">进行中</button>
+            <button id="tab-completed" class="px-6 py-3 text-sm font-medium text-[#617289] dark:text-[#94a3b8] hover:text-[#111418] dark:hover:text-white border-b-2 border-transparent transition-colors">已完成</button>
         </div>
         <!-- Experiment Card Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="experiments-grid">
@@ -147,20 +147,25 @@
         const searchInput = document.getElementById('search-input');
         const allExperiments = getExperiments().reverse();
         
+        // Global Filter State
+        let currentFilter = 'all';
+        
         function renderExperiments(experiments) {
             let html = '';
             let unviewedCount = 0;
             
-            // Add "New" Card first
-            html += `
-            <a href="design.html" class="border-2 border-dashed border-[#dbe0e6] dark:border-[#2a3544] rounded-xl flex flex-col items-center justify-center p-8 bg-white/50 dark:bg-[#161f2a]/50 hover:border-primary/50 transition-colors cursor-pointer group min-h-[280px]">
-                <div class="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-3xl">add</span>
-                </div>
-                <p class="text-base font-bold text-[#111418] dark:text-white">创建新调查</p>
-                <p class="text-sm text-[#617289] dark:text-gray-400 mt-1 text-center">开始您的第一个 AI 社会学实验</p>
-            </a>
-            `;
+            // Add "New" Card first ONLY if filter is 'all'
+            if (currentFilter === 'all') {
+                html += `
+                <a href="design.html" class="border-2 border-dashed border-[#dbe0e6] dark:border-[#2a3544] rounded-xl flex flex-col items-center justify-center p-8 bg-white/50 dark:bg-[#161f2a]/50 hover:border-primary/50 transition-colors cursor-pointer group min-h-[280px]">
+                    <div class="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-3xl">add</span>
+                    </div>
+                    <p class="text-base font-bold text-[#111418] dark:text-white">创建新调查</p>
+                    <p class="text-sm text-[#617289] dark:text-gray-400 mt-1 text-center">开始您的第一个 AI 社会学实验</p>
+                </a>
+                `;
+            }
 
             if (experiments.length > 0) {
                 experiments.forEach(exp => {
@@ -241,6 +246,41 @@
             });
             renderExperiments(filtered);
         });
+        
+        // Tab Filtering Logic
+        const tabs = {
+            'all': document.getElementById('tab-all'),
+            'running': document.getElementById('tab-running'),
+            'completed': document.getElementById('tab-completed')
+        };
+        
+        // currentFilter is defined at top
+
+        function setActiveTab(filter) {
+            currentFilter = filter;
+            
+            // Update UI
+            Object.values(tabs).forEach(tab => {
+                tab.className = "px-6 py-3 text-sm font-medium text-[#617289] dark:text-[#94a3b8] hover:text-[#111418] dark:hover:text-white border-b-2 border-transparent transition-colors";
+            });
+            
+            const activeTab = tabs[filter];
+            activeTab.className = "px-6 py-3 text-sm font-bold border-b-2 border-primary text-primary transition-colors";
+            
+            // Filter Experiments
+            let filtered = allExperiments;
+            if (filter === 'running') {
+                filtered = allExperiments.filter(e => e.status === 'running');
+            } else if (filter === 'completed') {
+                filtered = allExperiments.filter(e => e.status === 'completed');
+            }
+            
+            renderExperiments(filtered);
+        }
+        
+        tabs.all.addEventListener('click', () => setActiveTab('all'));
+        tabs.running.addEventListener('click', () => setActiveTab('running'));
+        tabs.completed.addEventListener('click', () => setActiveTab('completed'));
     });
 </script>
 </body>

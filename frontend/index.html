@@ -169,7 +169,7 @@
 
                     const link = isRunning ? `monitor.html?id=${exp.id}` : (isCompleted ? `report.html?id=${exp.id}` : `design.html?id=${exp.id}`);
                     const actionText = isRunning ? '查看监控' : (isCompleted ? '详情报告' : '继续编辑');
-                    const title = exp.config.personaName ? `${exp.config.personaName} 的抉择` : '未命名实验';
+                    const title = exp.config.experimentName || (exp.config.personaName ? `${exp.config.personaName} 的抉择` : '未命名实验');
 
                     html += `
                     <div class="bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-5 hover:shadow-lg transition-all group flex flex-col">

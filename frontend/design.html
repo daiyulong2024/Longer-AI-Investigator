@@ -80,6 +80,10 @@
                     <section id="section-persona" class="bg-white dark:bg-[#1a202c] rounded-xl shadow-sm border border-[#e5e7eb] mb-6 p-6">
                         <h2 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">person</span> 角色设定</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="col-span-1 md:col-span-2">
+                                <label class="block text-sm font-medium mb-2">实验名称</label>
+                                <input name="experimentName" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary/20" placeholder="为本次实验起个名字" />
+                            </div>
                             <div>
                                 <label class="block text-sm font-medium mb-2">角色名称</label>
                                 <input name="personaName" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary/20" placeholder="例如：中学生" value="中学生"/>
@@ -171,6 +175,7 @@
         const config = {};
         
         // Manual extraction because FormData structure varies
+        config.experimentName = form.querySelector('[name=experimentName]').value;
         config.personaName = form.querySelector('[name=personaName]').value;
         config.behaviorLogic = form.querySelector('[name=behaviorLogic]').value;
         config.backgroundStory = form.querySelector('[name=backgroundStory]').value;

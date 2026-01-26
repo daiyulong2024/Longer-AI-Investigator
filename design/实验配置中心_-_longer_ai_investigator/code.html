@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>实验配置中心 - Longer AI Investigator</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101822",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.375rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings:
+            'FILL' 1,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white font-display overflow-hidden">
+<div class="flex h-screen w-full bg-background-light dark:bg-background-dark">
+<!-- Sidebar Navigation -->
+<div class="w-64 flex-shrink-0 flex flex-col bg-white dark:bg-[#1a202c] border-r border-[#e5e7eb] dark:border-[#2d3748] h-full">
+<!-- Brand Header -->
+<div class="p-6 border-b border-[#f0f2f4] dark:border-[#2d3748]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined filled">science</span>
+</div>
+<div>
+<h1 class="text-base font-bold text-[#111418] dark:text-white leading-tight">Longer AI</h1>
+<p class="text-xs text-[#617289] dark:text-[#94a3b8] font-medium">Investigator Platform</p>
+</div>
+</div>
+</div>
+<!-- Stepper Navigation -->
+<div class="flex-1 overflow-y-auto py-6 px-4">
+<div class="flex flex-col gap-1">
+<!-- Step 1: Active -->
+<div class="group flex items-center gap-3 px-3 py-3 rounded-lg bg-primary/10 border-l-4 border-primary cursor-pointer transition-colors">
+<span class="material-symbols-outlined filled text-primary">person</span>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-[#111418] dark:text-white">角色设定</span>
+<span class="text-xs text-primary font-medium">Role Setting</span>
+</div>
+</div>
+<!-- Step Line -->
+<div class="ml-6 h-4 border-l border-[#e5e7eb] dark:border-[#4a5568]"></div>
+<!-- Step 2 -->
+<div class="group flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#f8f9fa] dark:hover:bg-[#2d3748] border-l-4 border-transparent cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[#617289] dark:text-[#94a3b8]">landscape</span>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-[#617289] dark:text-[#cbd5e0] group-hover:text-[#111418] dark:group-hover:text-white">场景预设</span>
+<span class="text-xs text-[#94a3b8]">Scenario Setup</span>
+</div>
+</div>
+<!-- Step Line -->
+<div class="ml-6 h-4 border-l border-[#e5e7eb] dark:border-[#4a5568]"></div>
+<!-- Step 3 -->
+<div class="group flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#f8f9fa] dark:hover:bg-[#2d3748] border-l-4 border-transparent cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[#617289] dark:text-[#94a3b8]">quiz</span>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-[#617289] dark:text-[#cbd5e0] group-hover:text-[#111418] dark:group-hover:text-white">问卷与选项</span>
+<span class="text-xs text-[#94a3b8]">Question &amp; Options</span>
+</div>
+</div>
+<!-- Step Line -->
+<div class="ml-6 h-4 border-l border-[#e5e7eb] dark:border-[#4a5568]"></div>
+<!-- Step 4 -->
+<div class="group flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#f8f9fa] dark:hover:bg-[#2d3748] border-l-4 border-transparent cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[#617289] dark:text-[#94a3b8]">tune</span>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-[#617289] dark:text-[#cbd5e0] group-hover:text-[#111418] dark:group-hover:text-white">执行参数</span>
+<span class="text-xs text-[#94a3b8]">Configuration</span>
+</div>
+</div>
+</div>
+</div>
+<!-- User Profile Footer -->
+<div class="p-4 border-t border-[#f0f2f4] dark:border-[#2d3748]">
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-[#f8f9fa] dark:hover:bg-[#2d3748] cursor-pointer">
+<div class="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 overflow-hidden" data-alt="User avatar gradient"></div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium text-[#111418] dark:text-white truncate">Dr. Zhang</p>
+<p class="text-xs text-[#617289] dark:text-[#94a3b8] truncate">Lead Researcher</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark">
+<div class="max-w-[960px] mx-auto px-8 py-10 pb-32">
+<!-- Page Heading -->
+<div class="flex flex-col gap-2 mb-8">
+<div class="flex items-center justify-between">
+<div>
+<h1 class="text-3xl font-extrabold text-[#111418] dark:text-white tracking-tight">实验配置中心</h1>
+<p class="text-[#617289] dark:text-[#94a3b8] mt-1 text-base">新建或编辑您的 AI 社会实验配置 (Create or edit experiment configuration)</p>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wider dark:bg-green-900/30 dark:text-green-400">Draft</span>
+</div>
+</div>
+</div>
+<!-- Form Section 1: Role Setting -->
+<section class="bg-white dark:bg-[#1a202c] rounded-xl shadow-sm border border-[#e5e7eb] dark:border-[#2d3748] mb-6 overflow-hidden">
+<div class="px-6 py-4 border-b border-[#f0f2f4] dark:border-[#2d3748] flex items-center justify-between bg-white dark:bg-[#1a202c]">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-primary">
+<span class="material-symbols-outlined">person</span>
+</div>
+<h2 class="text-lg font-bold text-[#111418] dark:text-white">1. 角色设定 (Role Setting)</h2>
+</div>
+</div>
+<div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Role Name -->
+<div class="col-span-1">
+<label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0] mb-2">角色名称 (Persona Name)</label>
+<div class="relative">
+<span class="absolute left-3 top-3.5 text-[#94a3b8] material-symbols-outlined text-[20px]">badge</span>
+<input class="w-full pl-10 pr-4 py-3 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder-[#94a3b8]" placeholder="例如：中学生 (e.g., Middle School Student)" type="text" value="中学生 A"/>
+</div>
+</div>
+<!-- Behavioral Logic -->
+<div class="col-span-1">
+<label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0] mb-2">行为逻辑 (Behavioral Logic)</label>
+<select class="w-full px-4 py-3 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer">
+<option>理性分析型 (Rational Analysis)</option>
+<option>情感驱动型 (Emotional Driven)</option>
+<option>随机漫步型 (Random Walk)</option>
+<option>从众心理型 (Herd Mentality)</option>
+</select>
+</div>
+<!-- Background Story -->
+<div class="col-span-1 md:col-span-2">
+<label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0] mb-2">背景故事 (Background Story)</label>
+<textarea class="w-full p-4 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all min-h-[120px] resize-y placeholder-[#94a3b8]" placeholder="描述角色的成长环境、性格特征等..."></textarea>
+<p class="text-xs text-[#64748b] mt-1 text-right">0 / 500 characters</p>
+</div>
+</div>
+</section>
+<!-- Form Section 2: Scenario Setup -->
+<section class="bg-white dark:bg-[#1a202c] rounded-xl shadow-sm border border-[#e5e7eb] dark:border-[#2d3748] mb-6 overflow-hidden">
+<div class="px-6 py-4 border-b border-[#f0f2f4] dark:border-[#2d3748] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg text-purple-600 dark:text-purple-400">
+<span class="material-symbols-outlined">landscape</span>
+</div>
+<h2 class="text-lg font-bold text-[#111418] dark:text-white">2. 场景预设 (Scenario Setup)</h2>
+</div>
+</div>
+<div class="p-6">
+<label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0] mb-2">场景描述 (Detailed Situation)</label>
+<!-- Fake Rich Text Editor -->
+<div class="border border-[#dbe0e6] dark:border-[#4a5568] rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all">
+<div class="bg-[#f8f9fa] dark:bg-[#2d3748] px-3 py-2 border-b border-[#dbe0e6] dark:border-[#4a5568] flex gap-2">
+<button class="p-1 hover:bg-[#e2e8f0] dark:hover:bg-[#4a5568] rounded text-[#64748b]"><span class="material-symbols-outlined text-[18px]">format_bold</span></button>
+<button class="p-1 hover:bg-[#e2e8f0] dark:hover:bg-[#4a5568] rounded text-[#64748b]"><span class="material-symbols-outlined text-[18px]">format_italic</span></button>
+<button class="p-1 hover:bg-[#e2e8f0] dark:hover:bg-[#4a5568] rounded text-[#64748b]"><span class="material-symbols-outlined text-[18px]">format_underlined</span></button>
+<div class="w-px h-5 bg-[#dbe0e6] dark:bg-[#4a5568] mx-1"></div>
+<button class="p-1 hover:bg-[#e2e8f0] dark:hover:bg-[#4a5568] rounded text-[#64748b]"><span class="material-symbols-outlined text-[18px]">format_list_bulleted</span></button>
+<button class="p-1 hover:bg-[#e2e8f0] dark:hover:bg-[#4a5568] rounded text-[#64748b]"><span class="material-symbols-outlined text-[18px]">link</span></button>
+</div>
+<textarea class="w-full p-4 bg-white dark:bg-[#1a202c] text-[#111418] dark:text-white text-sm border-none focus:ring-0 min-h-[160px] resize-y placeholder-[#94a3b8]" placeholder="在此处详细描述实验所处的环境、时间、地点以及发生的事件... (Describe the environment, time, location, and events...)"></textarea>
+</div>
+</div>
+</section>
+<!-- Form Section 3: Question & Options -->
+<section class="bg-white dark:bg-[#1a202c] rounded-xl shadow-sm border border-[#e5e7eb] dark:border-[#2d3748] mb-6 overflow-hidden">
+<div class="px-6 py-4 border-b border-[#f0f2f4] dark:border-[#2d3748] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg text-orange-600 dark:text-orange-400">
+<span class="material-symbols-outlined">quiz</span>
+</div>
+<h2 class="text-lg font-bold text-[#111418] dark:text-white">3. 问卷与选项 (Question &amp; Options)</h2>
+</div>
+</div>
+<div class="p-6 flex flex-col gap-6">
+<!-- Question -->
+<div>
+<label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0] mb-2">核心问题 (Core Question)</label>
+<input class="w-full px-4 py-3 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium" placeholder="例如：面对这种情况，你会如何选择？ (e.g., How would you choose in this situation?)" type="text" value=""/>
+</div>
+<!-- Options List -->
+<div class="flex flex-col gap-3">
+<label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0]">选项设置 (Answer Options)</label>
+<!-- Option A -->
+<div class="flex items-center gap-3 group">
+<div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-sm font-bold text-slate-500 dark:text-slate-300">A</div>
+<input class="flex-1 px-4 py-2.5 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="选项 A 内容" type="text" value="保持沉默，不采取任何行动"/>
+<button class="p-2 text-slate-400 hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+<!-- Option B -->
+<div class="flex items-center gap-3 group">
+<div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-sm font-bold text-slate-500 dark:text-slate-300">B</div>
+<input class="flex-1 px-4 py-2.5 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="选项 B 内容" type="text" value="主动干预，试图改变现状"/>
+<button class="p-2 text-slate-400 hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+<!-- Add Option Button -->
+<div class="pl-11 mt-1">
+<button class="flex items-center gap-2 text-primary hover:text-blue-700 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                                    添加选项 (Add Option)
+                                </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Form Section 4: Parameters -->
+<section class="bg-white dark:bg-[#1a202c] rounded-xl shadow-sm border border-[#e5e7eb] dark:border-[#2d3748] mb-6 overflow-hidden">
+<div class="px-6 py-4 border-b border-[#f0f2f4] dark:border-[#2d3748] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-teal-50 dark:bg-teal-900/20 rounded-lg text-teal-600 dark:text-teal-400">
+<span class="material-symbols-outlined">tune</span>
+</div>
+<h2 class="text-lg font-bold text-[#111418] dark:text-white">4. 执行参数 (Execution Parameters)</h2>
+</div>
+</div>
+<div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Model Selection -->
+<div class="col-span-1">
+<label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0] mb-2">模型选择 (API Model)</label>
+<div class="relative">
+<span class="absolute left-3 top-3.5 text-[#94a3b8] material-symbols-outlined text-[20px]">psychology</span>
+<select class="w-full pl-10 pr-4 py-3 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer">
+<option>GPT-4-Turbo</option>
+<option>Claude 3 Opus</option>
+<option>Llama 3 70B</option>
+</select>
+<span class="absolute right-3 top-3.5 text-[#94a3b8] material-symbols-outlined text-[20px] pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Instance Count -->
+<div class="col-span-1">
+<div class="flex justify-between mb-2">
+<label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0]">AI 实例数量 (Instance Count)</label>
+<span class="text-sm font-bold text-primary">100 Agents</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs text-[#64748b]">1</span>
+<input class="w-full h-2 bg-[#e2e8f0] rounded-lg appearance-none cursor-pointer accent-primary" max="500" min="1" type="range" value="100"/>
+<span class="text-xs text-[#64748b]">500</span>
+</div>
+</div>
+<!-- Toggles -->
+<div class="col-span-1 md:col-span-2 flex flex-col sm:flex-row gap-6 sm:gap-12 border-t border-[#f0f2f4] dark:border-[#2d3748] pt-6 mt-2">
+<div class="flex items-center justify-between gap-4">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-[#111418] dark:text-white">并行执行 (Parallel Threads)</span>
+<span class="text-xs text-[#64748b]">加快实验运行速度，消耗更多即时算力</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between gap-4">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-[#111418] dark:text-white">思维链记录 (Chain of Thought)</span>
+<span class="text-xs text-[#64748b]">保存 AI 决策的中间推理过程</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Sticky Action Footer -->
+<div class="absolute bottom-0 w-full bg-white dark:bg-[#1a202c] border-t border-[#e5e7eb] dark:border-[#2d3748] px-8 py-4 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+<div class="max-w-[960px] mx-auto flex justify-between items-center">
+<div class="text-sm text-[#64748b]">
+                    Estimated cost: <span class="font-bold text-[#111418] dark:text-white">$0.45</span> / run
+                </div>
+<div class="flex gap-4">
+<button class="px-5 py-2.5 rounded-lg border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white font-medium hover:bg-[#f8f9fa] dark:hover:bg-[#2d3748] transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">save</span>
+                        保存草稿 (Save)
+                    </button>
+<button class="px-6 py-2.5 rounded-lg bg-primary text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all transform active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">play_arrow</span>
+                        运行实验 (Run Experiment)
+                    </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

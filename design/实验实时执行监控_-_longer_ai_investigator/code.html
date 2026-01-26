@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>实验实时执行监控 - Longer AI Investigator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101822",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .log-container::-webkit-scrollbar { width: 6px; }
+        .log-container::-webkit-scrollbar-track { background: transparent; }
+        .log-container::-webkit-scrollbar-thumb { background: #dbe0e6; border-radius: 10px; }
+        .pulse-dot { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-[#111418]">
+<div class="flex flex-col h-screen">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 bg-white dark:bg-background-dark dark:border-slate-800 px-10 py-3 shrink-0">
+<div class="flex items-center gap-4 text-[#111418] dark:text-white">
+<div class="size-6 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight">Longer AI Investigator</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="flex items-center gap-9">
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">仪表盘</a>
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">实验设计</a>
+<a class="text-primary text-sm font-bold border-b-2 border-primary" href="#">执行监控</a>
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">数据分析</a>
+</nav>
+<div class="flex gap-2">
+<button class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 relative">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-background-dark"></span>
+</button>
+</div>
+<div class="size-10 rounded-full bg-cover bg-center border border-slate-200" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCe8fNPnKDqxCW2-X6Zfz6KICrm5QSd2FkPTb0F1vgWw_qePfk_xcYk-e8H6y3yeY_sofMoE8uBZKvGFzMZKujzghzfeeO0PL-5DGjfgd9_bMuzGav4KGasoF0nGPI01SVnhtUKVoqVD8mcdchZiSq2OKjQLl3RHt9CrULZoIB1RLkyMsYCmftabQuLv6TgNZdup5epJ5zlLOZv0sFELmkopg5VpNkgbL8sWnBx_v8C4RLoLRg4T6CH5B8ntNhLPb07NaiYhjtrbFVH");'></div>
+</div>
+</header>
+<!-- Main Content Layout -->
+<main class="flex-1 flex overflow-hidden">
+<!-- Left Sidebar / Logs Section -->
+<div class="flex-1 flex flex-col p-6 overflow-hidden">
+<!-- Page Heading -->
+<div class="flex flex-wrap justify-between items-end gap-3 mb-6">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<h1 class="text-[#111418] dark:text-white text-3xl font-black tracking-tight">实验实时执行监控</h1>
+<span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-bold rounded flex items-center gap-1">
+<span class="size-1.5 bg-green-600 rounded-full pulse-dot"></span>
+                                正在运行
+                            </span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm">当前实验：AI 社会行为演化博弈 (ID: EXP-202405-PRO)</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-bold hover:bg-slate-200 transition-all">
+<span class="material-symbols-outlined mr-2 text-lg">download</span>
+                            导出实时数据
+                        </button>
+<button class="flex items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold hover:opacity-90 transition-all shadow-sm">
+<span class="material-symbols-outlined mr-2 text-lg">play_arrow</span>
+                            继续所有线程
+                        </button>
+</div>
+</div>
+<!-- Progress Section -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 mb-6 shadow-sm">
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="text-[#111418] dark:text-white text-base font-semibold">总体执行进度</span>
+<span class="text-xs text-slate-400 font-mono">STEP 6,802 / 10,000</span>
+</div>
+<p class="text-primary text-lg font-black font-mono">68.2%</p>
+</div>
+<div class="h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+<div class="h-full rounded-full bg-primary relative transition-all duration-500" style="width: 68%;">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+</div>
+</div>
+<div class="flex justify-between items-center text-xs text-slate-500">
+<p>已处理: 6,802 / 总计: 10,000 个采样点</p>
+<p class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">speed</span>
+                                142 样本/秒
+                            </p>
+</div>
+</div>
+</div>
+<!-- Real-time Logs Terminal -->
+<div class="flex-1 flex flex-col min-h-0 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+<div class="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400 text-xl">terminal</span>
+<h2 class="text-sm font-bold text-slate-700 dark:text-slate-300 tracking-wide uppercase">实时决策日志</h2>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<label class="text-[10px] text-slate-400 uppercase font-bold">自动滚动</label>
+<div class="w-8 h-4 bg-primary/20 rounded-full relative flex items-center px-0.5">
+<div class="size-3 bg-primary rounded-full translate-x-4"></div>
+</div>
+</div>
+<button class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined text-lg">filter_list</span></button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto log-container p-4 font-mono text-[13px] leading-relaxed">
+<div class="space-y-1.5">
+<div class="flex gap-4 p-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded group">
+<span class="text-slate-400 shrink-0">14:32:01.042</span>
+<span class="text-primary font-bold shrink-0">[Agent #1024]</span>
+<span class="text-slate-700 dark:text-slate-300">观察到资源稀缺，选择 <span class="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-1 rounded font-bold">合作策略</span> 以维持长期博弈收益。</span>
+</div>
+<div class="flex gap-4 p-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded group">
+<span class="text-slate-400 shrink-0">14:32:01.088</span>
+<span class="text-primary font-bold shrink-0">[Agent #0982]</span>
+<span class="text-slate-700 dark:text-slate-300">收到来自 #1024 的信号，状态更新：<span class="text-green-600">信任度 +0.15</span></span>
+</div>
+<div class="flex gap-4 p-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded group">
+<span class="text-slate-400 shrink-0">14:32:02.115</span>
+<span class="text-amber-600 font-bold shrink-0">[System]</span>
+<span class="text-slate-700 dark:text-slate-300 font-bold">批次 #68 完成，正在进行状态同步...</span>
+</div>
+<div class="flex gap-4 p-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded group">
+<span class="text-slate-400 shrink-0">14:32:02.250</span>
+<span class="text-primary font-bold shrink-0">[Agent #0441]</span>
+<span class="text-slate-700 dark:text-slate-300">触发紧急规避逻辑，选择 <span class="bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300 px-1 rounded font-bold">退出博弈</span> 锁定当前点数。</span>
+</div>
+<div class="flex gap-4 p-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded group">
+<span class="text-slate-400 shrink-0">14:32:02.311</span>
+<span class="text-primary font-bold shrink-0">[Agent #2214]</span>
+<span class="text-slate-700 dark:text-slate-300">决策路径：A -&gt; B (Confidence: 0.982)</span>
+</div>
+<div class="flex gap-4 p-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded group">
+<span class="text-slate-400 shrink-0">14:32:02.505</span>
+<span class="text-primary font-bold shrink-0">[Agent #0012]</span>
+<span class="text-slate-700 dark:text-slate-300">正在调用 LLM 接口进行复杂社会推理... <span class="italic text-slate-400">(Pending)</span></span>
+</div>
+<!-- Mocking many lines -->
+<div class="flex gap-4 p-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded group">
+<span class="text-slate-400 shrink-0">14:32:03.002</span>
+<span class="text-primary font-bold shrink-0">[Agent #1024]</span>
+<span class="text-slate-700 dark:text-slate-300">博弈周期 T+5 结束，收益结算：+14 Tokens.</span>
+</div>
+<div class="flex gap-4 p-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded group">
+<span class="text-slate-400 shrink-0">14:32:03.142</span>
+<span class="text-primary font-bold shrink-0">[Agent #0881]</span>
+<span class="text-slate-700 dark:text-slate-300">策略漂移检测：当前行为偏离基准值 12%。</span>
+</div>
+<div class="flex gap-4 p-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded group">
+<span class="text-slate-400 shrink-0">14:32:03.455</span>
+<span class="text-primary font-bold shrink-0">[Agent #1192]</span>
+<span class="text-slate-700 dark:text-slate-300">执行 <span class="bg-primary/10 text-primary px-1 rounded font-bold">选项 B (背叛)</span> - 预期收益最大化。</span>
+</div>
+<div class="flex gap-4 p-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded group">
+<span class="text-slate-400 shrink-0">14:32:03.901</span>
+<span class="text-primary font-bold shrink-0">[Agent #0211]</span>
+<span class="text-slate-700 dark:text-slate-300">检测到群体协作倾向，自动调整学习速率。</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Sidebar / Metrics & Controls -->
+<div class="w-80 border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark flex flex-col p-6 shrink-0 overflow-y-auto">
+<h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">实时资源监控</h3>
+<div class="space-y-4 mb-8">
+<div class="flex flex-col gap-2 rounded-xl p-4 border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+<div class="flex justify-between items-center">
+<p class="text-slate-500 text-sm font-medium">已消耗 Tokens</p>
+<span class="material-symbols-outlined text-primary text-xl">toll</span>
+</div>
+<p class="text-[#111418] dark:text-white tracking-tight text-2xl font-black font-mono">1,240,500</p>
+<p class="text-[#07883b] text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            +12% / 分钟
+                        </p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-4 border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+<div class="flex justify-between items-center">
+<p class="text-slate-500 text-sm font-medium">当前活跃线程</p>
+<span class="material-symbols-outlined text-primary text-xl">reorder</span>
+</div>
+<div class="flex items-end justify-between">
+<p class="text-[#111418] dark:text-white tracking-tight text-2xl font-black font-mono">42 <span class="text-sm text-slate-400 font-normal">/ 64</span></p>
+<div class="flex gap-0.5 items-end h-6">
+<div class="w-1 bg-primary rounded-full h-3"></div>
+<div class="w-1 bg-primary rounded-full h-5"></div>
+<div class="w-1 bg-primary rounded-full h-4"></div>
+<div class="w-1 bg-primary rounded-full h-6"></div>
+<div class="w-1 bg-primary/30 rounded-full h-2"></div>
+<div class="w-1 bg-primary/30 rounded-full h-3"></div>
+</div>
+</div>
+<p class="text-slate-400 text-xs">CPU 负载: 64.2%</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-4 border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+<div class="flex justify-between items-center">
+<p class="text-slate-500 text-sm font-medium">预计剩余时间</p>
+<span class="material-symbols-outlined text-primary text-xl">schedule</span>
+</div>
+<p class="text-[#111418] dark:text-white tracking-tight text-2xl font-black font-mono">00:15:24</p>
+<p class="text-slate-400 text-xs">预计完成时间 14:47</p>
+</div>
+</div>
+<h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">异常监控</h3>
+<div class="space-y-3 mb-8">
+<div class="flex items-center justify-between p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-red-600">error</span>
+<span class="text-xs font-bold text-red-700 dark:text-red-400">API 超时重试</span>
+</div>
+<span class="text-xs font-mono font-bold text-red-700 dark:text-red-400">12</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-amber-600">warning</span>
+<span class="text-xs font-bold text-amber-700 dark:text-amber-400">低置信度决策</span>
+</div>
+<span class="text-xs font-mono font-bold text-amber-700 dark:text-amber-400">03</span>
+</div>
+</div>
+<!-- Controls Center -->
+<div class="mt-auto pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-3">
+<button class="w-full flex items-center justify-center gap-2 rounded-xl py-3 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold hover:opacity-90 transition-all shadow-lg shadow-slate-200 dark:shadow-none">
+<span class="material-symbols-outlined">pause_circle</span>
+                        暂停实验执行
+                    </button>
+<button class="w-full flex items-center justify-center gap-2 rounded-xl py-3 border-2 border-red-100 text-red-600 font-bold hover:bg-red-50 transition-all">
+<span class="material-symbols-outlined">stop_circle</span>
+                        终止当前任务
+                    </button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

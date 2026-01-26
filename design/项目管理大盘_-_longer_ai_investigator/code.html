@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>项目管理大盘 - Longer AI Investigator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101822",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', 'Noto Sans SC', sans-serif;
+        }
+        .sparkline-path {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 0;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white min-h-screen flex font-display">
+<!-- Sidebar Navigation -->
+<aside class="w-64 border-r border-[#dbe0e6] dark:border-[#2a3544] bg-white dark:bg-[#161f2a] flex flex-col fixed h-full z-20">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-8">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xl">psychology_alt</span>
+</div>
+<div>
+<h1 class="text-[#111418] dark:text-white text-base font-bold leading-tight">Longer AI</h1>
+<p class="text-[#617289] dark:text-[#94a3b8] text-xs font-normal">Investigator Pro</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary" href="#">
+<span class="material-symbols-outlined text-[22px] font-variation-fill">grid_view</span>
+<span class="text-sm font-semibold">项目管理</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617289] dark:text-[#94a3b8] hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">description</span>
+<span class="text-sm font-medium">实验模板</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617289] dark:text-[#94a3b8] hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">key</span>
+<span class="text-sm font-medium">API 密钥</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#617289] dark:text-[#94a3b8] hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-[22px]">settings</span>
+<span class="text-sm font-medium">系统设置</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto p-4 border-t border-[#dbe0e6] dark:border-[#2a3544]">
+<div class="flex items-center gap-3 px-2">
+<div class="size-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-gray-500">account_circle</span>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="text-sm font-bold truncate dark:text-white">研究员 007</p>
+<p class="text-xs text-[#617289] dark:text-[#94a3b8] truncate">researcher@longer.ai</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 flex flex-col min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="h-16 border-b border-[#dbe0e6] dark:border-[#2a3544] bg-white/80 dark:bg-[#161f2a]/80 backdrop-blur-md sticky top-0 z-10 px-8 flex items-center justify-between">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#617289] text-xl">search</span>
+<input class="w-full bg-[#f0f2f4] dark:bg-[#2a3544] border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary dark:text-white placeholder:text-[#617289]" placeholder="搜索实验、参数或报告..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="size-10 rounded-lg bg-[#f0f2f4] dark:bg-[#2a3544] flex items-center justify-center text-[#111418] dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="bg-primary text-white px-5 h-10 rounded-lg flex items-center gap-2 text-sm font-bold shadow-sm shadow-primary/20 hover:bg-blue-600 transition-colors">
+<span class="material-symbols-outlined text-xl">add</span>
+<span>新建调查</span>
+</button>
+</div>
+</header>
+<!-- Content Padding Area -->
+<div class="p-8 max-w-[1400px] mx-auto w-full">
+<!-- Page Heading -->
+<div class="mb-8">
+<div class="flex items-end justify-between gap-4">
+<div>
+<h2 class="text-3xl font-black text-[#111418] dark:text-white mb-2">项目管理大盘</h2>
+<p class="text-[#617289] dark:text-[#94a3b8] text-base">监控 AI Agent 社会实验运行状态，深度分析群体决策路径。</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 text-sm font-bold border border-[#dbe0e6] dark:border-[#2a3544] rounded-lg hover:bg-white dark:hover:bg-[#161f2a]">导出报告</button>
+<button class="px-4 py-2 text-sm font-bold bg-[#f0f2f4] dark:bg-[#2a3544] rounded-lg">批量管理</button>
+</div>
+</div>
+</div>
+<!-- Tabs Section -->
+<div class="mb-6 flex border-b border-[#dbe0e6] dark:border-[#2a3544]">
+<button class="px-6 py-3 text-sm font-bold border-b-2 border-primary text-primary">全部实验 (24)</button>
+<button class="px-6 py-3 text-sm font-medium text-[#617289] dark:text-[#94a3b8] hover:text-[#111418] dark:hover:text-white">进行中 (8)</button>
+<button class="px-6 py-3 text-sm font-medium text-[#617289] dark:text-[#94a3b8] hover:text-[#111418] dark:hover:text-white">已完成 (12)</button>
+<button class="px-6 py-3 text-sm font-medium text-[#617289] dark:text-[#94a3b8] hover:text-[#111418] dark:hover:text-white">草稿 (4)</button>
+</div>
+<!-- Experiment Card Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Card 1: Running -->
+<div class="bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-5 hover:shadow-lg transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="px-2.5 py-1 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                            运行中
+                        </div>
+<button class="text-[#617289] hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<h3 class="text-lg font-bold text-[#111418] dark:text-white mb-4 group-hover:text-primary transition-colors">青少年压力研究</h3>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-background-light dark:bg-[#2a3544] p-3 rounded-lg">
+<p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-1">人格类型</p>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary">group</span>
+<p class="text-sm font-bold">多样化</p>
+</div>
+</div>
+<div class="bg-background-light dark:bg-[#2a3544] p-3 rounded-lg">
+<p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-1">样本量</p>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary">analytics</span>
+<p class="text-sm font-bold">500 Agents</p>
+</div>
+</div>
+</div>
+<!-- Sparkline Mini Chart -->
+<div class="mb-6">
+<p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-3">进度趋势</p>
+<div class="h-12 w-full">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 100 30">
+<path class="sparkline-path" d="M0 25 Q 10 20, 20 22 T 40 10 T 60 15 T 80 5 T 100 12" fill="none" stroke="#136dec" stroke-width="2"></path>
+<circle cx="100" cy="12" fill="#136dec" r="3"></circle>
+</svg>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-[#dbe0e6] dark:border-[#2a3544]">
+<span class="text-xs text-[#617289] dark:text-[#94a3b8]">更新于: 2小时前</span>
+<button class="flex items-center gap-1 text-primary text-sm font-bold hover:underline">
+                            详情报告 <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 2: Completed -->
+<div class="bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-5 hover:shadow-lg transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="px-2.5 py-1 rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">check_circle</span>
+                            已完成
+                        </div>
+<button class="text-[#617289]">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<h3 class="text-lg font-bold text-[#111418] dark:text-white mb-4 group-hover:text-primary transition-colors">社交媒体偏见调查</h3>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-background-light dark:bg-[#2a3544] p-3 rounded-lg">
+<p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-1">人格类型</p>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary">psychology</span>
+<p class="text-sm font-bold">极端派</p>
+</div>
+</div>
+<div class="bg-background-light dark:bg-[#2a3544] p-3 rounded-lg">
+<p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-1">样本量</p>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary">analytics</span>
+<p class="text-sm font-bold">1,200 Agents</p>
+</div>
+</div>
+</div>
+<div class="mb-6">
+<p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-3">结果分布</p>
+<div class="h-12 w-full">
+<svg class="w-full h-full" viewbox="0 0 100 30">
+<path d="M0 28 L 10 15 L 20 22 L 35 5 L 50 18 L 65 10 L 80 20 L 100 5" fill="none" stroke="#22c55e" stroke-width="2"></path>
+<circle cx="100" cy="5" fill="#22c55e" r="3"></circle>
+</svg>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-[#dbe0e6] dark:border-[#2a3544]">
+<span class="text-xs text-[#617289] dark:text-[#94a3b8]">更新于: 昨日</span>
+<button class="flex items-center gap-1 text-primary text-sm font-bold hover:underline">
+                            详情报告 <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 3: Draft -->
+<div class="bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-5 hover:shadow-lg transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="px-2.5 py-1 rounded bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">edit_note</span>
+                            草稿
+                        </div>
+<button class="text-[#617289]">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<h3 class="text-lg font-bold text-[#111418] dark:text-white mb-4 group-hover:text-primary transition-colors">消费者决策模拟</h3>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-background-light dark:bg-[#2a3544] p-3 rounded-lg">
+<p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-1">人格类型</p>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary">workspace_premium</span>
+<p class="text-sm font-bold">专家级</p>
+</div>
+</div>
+<div class="bg-background-light dark:bg-[#2a3544] p-3 rounded-lg">
+<p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-1">样本量</p>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary">analytics</span>
+<p class="text-sm font-bold">250 Agents</p>
+</div>
+</div>
+</div>
+<div class="mb-6 flex items-center justify-center bg-gray-50 dark:bg-gray-800/50 h-12 rounded border border-dashed border-gray-200 dark:border-gray-700">
+<p class="text-xs text-gray-400 italic">尚未开始模拟</p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-[#dbe0e6] dark:border-[#2a3544]">
+<span class="text-xs text-[#617289] dark:text-[#94a3b8]">更新于: 3日前</span>
+<button class="flex items-center gap-1 text-primary text-sm font-bold hover:underline">
+                            继续编辑 <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 4: Running -->
+<div class="bg-white dark:bg-[#161f2a] rounded-xl border border-[#dbe0e6] dark:border-[#2a3544] p-5 hover:shadow-lg transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="px-2.5 py-1 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="size-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                            运行中
+                        </div>
+<button class="text-[#617289]">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<h3 class="text-lg font-bold text-[#111418] dark:text-white mb-4 group-hover:text-primary transition-colors">职场信任度量化</h3>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-background-light dark:bg-[#2a3544] p-3 rounded-lg">
+<p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-1">人格类型</p>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary">badge</span>
+<p class="text-sm font-bold">职场新人</p>
+</div>
+</div>
+<div class="bg-background-light dark:bg-[#2a3544] p-3 rounded-lg">
+<p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-1">样本量</p>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary">analytics</span>
+<p class="text-sm font-bold">800 Agents</p>
+</div>
+</div>
+</div>
+<div class="mb-6">
+<p class="text-[10px] text-[#617289] dark:text-[#94a3b8] uppercase font-bold mb-3">进度趋势</p>
+<div class="h-12 w-full">
+<svg class="w-full h-full" viewbox="0 0 100 30">
+<path d="M0 25 L 20 20 L 40 22 L 60 18 L 80 15 L 100 5" fill="none" stroke="#136dec" stroke-width="2"></path>
+<circle cx="100" cy="5" fill="#136dec" r="3"></circle>
+</svg>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-[#dbe0e6] dark:border-[#2a3544]">
+<span class="text-xs text-[#617289] dark:text-[#94a3b8]">更新于: 10分钟前</span>
+<button class="flex items-center gap-1 text-primary text-sm font-bold hover:underline">
+                            详情报告 <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Empty/New Project Card Placeholder -->
+<div class="border-2 border-dashed border-[#dbe0e6] dark:border-[#2a3544] rounded-xl flex flex-col items-center justify-center p-8 bg-white/50 dark:bg-[#161f2a]/50 hover:border-primary/50 transition-colors cursor-pointer group">
+<div class="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</div>
+<p class="text-base font-bold text-[#111418] dark:text-white">创建新调查</p>
+<p class="text-sm text-[#617289] dark:text-[#94a3b8] mt-1 text-center">开始您的第一个 AI 社会学实验</p>
+</div>
+</div>
+</div>
+</main>
+</body></html>

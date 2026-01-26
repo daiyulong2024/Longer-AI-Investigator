@@ -102,7 +102,12 @@
                     <thead class="bg-slate-50 text-slate-500">
                         <tr>
                             <th class="px-6 py-3 font-medium">Agent ID</th>
-                            <th class="px-6 py-3 font-medium">选择</th>
+                            <th class="px-6 py-3 font-medium cursor-pointer hover:bg-slate-100 transition-colors select-none" onclick="handleSort('option')">
+                                <div class="flex items-center gap-1">
+                                    选择
+                                    <span class="material-symbols-outlined text-[16px] text-slate-400" id="sort-icon-option">unfold_more</span>
+                                </div>
+                            </th>
                             <th class="px-6 py-3 font-medium w-1/2">推理</th>
                         </tr>
                     </thead>
@@ -171,20 +176,50 @@
         });
         chartContainer.innerHTML = chartHtml;
         
-        // Table
-        const tbody = document.getElementById('table-body');
-        let tableHtml = '';
-        // Show last 100
-        exp.logs.slice(-100).reverse().forEach(log => {
-             tableHtml += `
-             <tr class="hover:bg-slate-50">
-                <td class="px-6 py-3 font-mono text-xs">${log.agentId}</td>
-                <td class="px-6 py-3"><span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full text-xs font-bold">Option ${log.option}</span></td>
-                <td class="px-6 py-3 text-slate-600 truncate max-w-xs" title="${log.reasoning}">${log.reasoning}</td>
-             </tr>
-             `;
-        });
-        tbody.innerHTML = tableHtml;
+        // Table Logic
+        let currentLogs = exp.logs.slice(-100).reverse(); // Default view
+        let sortDir = 0; // 0: none, 1: asc, -1: desc
+        
+        window.renderTable = function(logs) {
+            const tbody = document.getElementById('table-body');
+            let tableHtml = '';
+            logs.forEach(log => {
+                 tableHtml += `
+                 <tr class="hover:bg-slate-50">
+                    <td class="px-6 py-3 font-mono text-xs">${log.agentId}</td>
+                    <td class="px-6 py-3"><span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full text-xs font-bold">Option ${log.option}</span></td>
+                    <td class="px-6 py-3 text-slate-600 truncate max-w-xs" title="${log.reasoning}">${log.reasoning}</td>
+                 </tr>
+                 `;
+            });
+            tbody.innerHTML = tableHtml;
+        };
+
+        window.handleSort = function(field) {
+            const icon = document.getElementById(`sort-icon-${field}`);
+            
+            // Toggle direction
+            if (sortDir === 0 || sortDir === -1) sortDir = 1;
+            else sortDir = -1;
+            
+            // Update Icon
+            if (sortDir === 1) icon.innerText = 'keyboard_arrow_up';
+            else icon.innerText = 'keyboard_arrow_down';
+            icon.classList.add('text-primary');
+            icon.classList.remove('text-slate-400');
+
+            // Sort
+            const sorted = [...currentLogs].sort((a, b) => {
+                if (a[field] < b[field]) return -1 * sortDir;
+                if (a[field] > b[field]) return 1 * sortDir;
+                return 0;
+            });
+            
+            renderTable(sorted);
+        }
+        
+        // Initial Render
+        renderTable(currentLogs);
     });
 </script>
 </body>

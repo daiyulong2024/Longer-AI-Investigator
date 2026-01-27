@@ -215,7 +215,11 @@
                                 <button onclick="toggleMenu('${exp.id}', event)" class="text-[#617289] hover:text-primary transition-colors p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"><span class="material-symbols-outlined">more_horiz</span></button>
                                 <!-- Dropdown Menu -->
                                 <div id="menu-${exp.id}" class="absolute right-0 top-8 w-32 bg-white dark:bg-[#1f2937] rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 z-10 hidden overflow-hidden">
-                                    <button onclick="handleExport('${exp.id}')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2">
+                                    <button 
+                                        onclick="${isRunning ? '' : `handleExport('${exp.id}')`}" 
+                                        class="w-full text-left px-4 py-2.5 text-sm ${isRunning ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'} flex items-center gap-2"
+                                        ${isRunning ? 'disabled' : ''}
+                                    >
                                         <span class="material-symbols-outlined text-base">download</span> 导出
                                     </button>
                                     <button onclick="handleDelete('${exp.id}')" class="w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2">

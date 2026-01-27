@@ -132,6 +132,14 @@
                                 <input name="option_C" class="flex-1 px-4 py-2 rounded-lg border border-gray-200" placeholder="选项 C (可选)"/>
                             </div>
                         </div>
+                        <div class="mt-4 flex gap-3">
+                            <button type="button" onclick="addOption()" class="flex items-center gap-1 text-primary font-bold text-sm hover:underline">
+                                <span class="material-symbols-outlined text-lg">add</span> 添加选项
+                            </button>
+                            <button type="button" onclick="removeOption()" class="flex items-center gap-1 text-red-500 font-bold text-sm hover:underline">
+                                <span class="material-symbols-outlined text-lg">remove</span> 减少选项
+                            </button>
+                        </div>
                     </section>
 
                     <!-- Section 4 -->
@@ -184,18 +192,33 @@
                 if(data.scenarioDescription) form.querySelector('[name=scenarioDescription]').value = data.scenarioDescription;
                 if(data.coreQuestion) form.querySelector('[name=coreQuestion]').value = data.coreQuestion;
                 
-                // Options
-                if(data.option_A) form.querySelector('[name=option_A]').value = data.option_A;
-                if(data.option_B) form.querySelector('[name=option_B]').value = data.option_B;
-                if(data.option_C) form.querySelector('[name=option_C]').value = data.option_C;
-                
-                // Existing experiment might store options differently (array)
+                // Options - Rebuild UI based on data
+                const container = document.getElementById('options-container');
+                container.innerHTML = ''; // Clear default inputs
+
+                // Determine options source (flat props like option_A or options array)
+                let optionsList = [];
                 if(data.options && Array.isArray(data.options)) {
-                     data.options.forEach(opt => {
-                         const input = form.querySelector(`[name=option_${opt.key}]`);
-                         if(input) input.value = opt.text;
+                     optionsList = data.options;
+                } else {
+                     // Try option_A, option_B...
+                     const keys = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+                     keys.forEach(k => {
+                         if(data[`option_${k}`]) {
+                             optionsList.push({key: k, text: data[`option_${k}`]});
+                         }
                      });
                 }
+                
+                // If no options, default to A, B, C empty
+                if(optionsList.length === 0) {
+                     optionsList = [{key:'A', text:''}, {key:'B', text:''}, {key:'C', text:''}];
+                }
+
+                // Render
+                optionsList.forEach(opt => {
+                    addOptionUI(opt.key, opt.text);
+                });
                 
                 // Params
                 if(data.instanceCount) {
@@ -225,6 +248,38 @@
             }
             // Else: Default Clean (HTML is already clean)
         });
+
+    function addOptionUI(key, value = '') {
+        const container = document.getElementById('options-container');
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-3';
+        div.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500">${key}</div>
+            <input name="option_${key}" class="flex-1 px-4 py-2 rounded-lg border border-gray-200" placeholder="选项 ${key}" value="${value}"/>
+        `;
+        container.appendChild(div);
+    }
+
+    function addOption() {
+        const container = document.getElementById('options-container');
+        const currentCount = container.children.length;
+        if (currentCount >= 26) {
+            alert("最多支持 26 个选项 (A-Z)");
+            return;
+        }
+        const nextKey = String.fromCharCode(65 + currentCount); // A=65
+        addOptionUI(nextKey);
+    }
+
+    function removeOption() {
+        const container = document.getElementById('options-container');
+        const currentCount = container.children.length;
+        if (currentCount <= 2) {
+            alert("至少需要保留 2 个选项");
+            return;
+        }
+        container.removeChild(container.lastElementChild);
+    }
 
     function handleRun() {
         const form = document.getElementById('design-form');

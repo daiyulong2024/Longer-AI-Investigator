@@ -12,16 +12,17 @@ AI Agent 社会实验平台：配置 AI 角色/场景/问卷 → 批量运行 Ag
 
 ```
 ./
-├── frontend/               # 主应用
-│   ├── index.html         # 项目管理大盘（实验列表、CRUD）
-│   ├── design.html        # 实验配置中心（角色/场景/选项/参数）
-│   ├── monitor.html       # 实时执行监控（进度条、日志流）
-│   ├── report.html        # 统计报告（图表、详细记录表）
-│   ├── roles.html         # 角色模板库
-│   ├── api.html           # API 密钥配置（OpenAI）
-│   ├── settings.html      # 系统设置（主题切换、数据重置）
-│   └── js/app.js          # 核心逻辑（状态管理、模拟引擎、API 调用）
-├── design/                 # UI 设计稿参考（screen.png + code.html）
+├── index.html         # 项目管理大盘（实验列表、CRUD）
+├── design.html        # 实验配置中心（角色/场景/选项/参数）
+├── monitor.html       # 实时执行监控（进度条、日志流）
+├── report.html        # 统计报告（图表、详细记录表）
+├── roles.html         # 角色模板库
+├── api.html           # API 密钥配置（OpenAI）
+├── settings.html      # 系统设置（主题切换、数据重置）
+├── js/                # 核心逻辑
+│   ├── app.js         # 状态管理、模拟引擎、API 调用
+│   └── templates.js   # 角色模板定义
+├── design/            # UI 设计稿参考（screen.png + code.html）
 └── README.md
 ```
 
@@ -29,8 +30,9 @@ AI Agent 社会实验平台：配置 AI 角色/场景/问卷 → 批量运行 Ag
 
 | Task | Location | Notes |
 |------|----------|-------|
-| 新增页面 | `frontend/*.html` | 复制现有页面结构，保持 sidebar 一致 |
-| 核心业务逻辑 | `frontend/js/app.js` | 所有状态管理、API 调用、模拟逻辑 |
+| 新增页面 | `*.html` | 复制现有页面结构，保持 sidebar 一致 |
+| 核心业务逻辑 | `js/app.js` | 所有状态管理、API 调用、模拟逻辑 |
+| 角色模板数据 | `js/templates.js` | 预定义角色模板配置 |
 | Tailwind 配置 | 各 HTML `<script id="tailwind-config">` | 每个页面内联配置 |
 | LocalStorage 操作 | `js/app.js` 前 100 行 | getExperiments/saveExperiment 等 |
 | OpenAI API 调用 | `js/app.js:124-196` | processAgent 函数 |
@@ -117,12 +119,12 @@ experiment = {
 
 ```bash
 # 无构建命令 - 直接打开 HTML
-start frontend/index.html  # Windows
-open frontend/index.html   # macOS
+start index.html  # Windows
+open index.html   # macOS
 
 # 如需本地服务器
-npx serve frontend
-python -m http.server 8000 -d frontend
+npx serve .
+python -m http.server 8000
 ```
 
 ## NOTES

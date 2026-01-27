@@ -103,7 +103,14 @@ async function runSimulation(experimentId, onProgress, onComplete) {
     
     const config = experiment.config;
     const totalAgents = parseInt(config.instanceCount) || 10;
-    const isParallel = config.isParallel;
+    // Handle new concurrentLimit or fallback to old isParallel logic
+    let batchSize = 1;
+    if (config.concurrentLimit) {
+        batchSize = parseInt(config.concurrentLimit);
+    } else if (config.isParallel) {
+        batchSize = 10; // Default for old experiments
+    }
+    if (batchSize < 1) batchSize = 1;
     
     // Initialize stats if empty
     experiment.stats = { total: 0, options: {}, times: [] };
@@ -234,9 +241,8 @@ Please make a choice. Output ONLY raw JSON, no markdown formatting.`;
         if (onProgress) onProgress(experiment);
     };
 
-    if (isParallel) {
+    if (batchSize > 1) {
         // Run in batches to avoid browser freeze if too many
-        const batchSize = 10;
         for (let i = 0; i < totalAgents; i += batchSize) {
             const batch = [];
             for (let j = 0; j < batchSize && (i + j) < totalAgents; j++) {

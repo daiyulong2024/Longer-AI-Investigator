@@ -139,18 +139,13 @@
                         <h2 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-teal-600">tune</span> 执行参数</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <div class="flex justify-between mb-2">
-                                    <label class="block text-sm font-medium">AI 实例数量</label>
-                                    <span class="text-primary font-bold" id="instance-count-display">50</span>
-                                </div>
-                                <input name="instanceCount" type="range" min="1" max="500" value="50" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary" oninput="document.getElementById('instance-count-display').innerText = this.value"/>
+                                <label class="block text-sm font-medium mb-2">AI 实例数量 (>=1)</label>
+                                <input name="instanceCount" type="number" min="1" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary/20" placeholder="例如：50"/>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <span class="font-medium">并行执行</span>
-                                    <p class="text-xs text-gray-500">加快速度</p>
-                                </div>
-                                <input name="isParallel" type="checkbox" checked class="w-6 h-6 text-primary rounded focus:ring-primary"/>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">并行线程数 (>=1)</label>
+                                <input name="concurrentLimit" type="number" min="1" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary/20" placeholder="例如：10 (建议值)"/>
+                                <p class="text-xs text-gray-500 mt-1">设置并行执行的并发量（1 = 串行）</p>
                             </div>
                         </div>
                     </section>
@@ -235,10 +230,12 @@
                 // Params
                 if(data.instanceCount) {
                     form.querySelector('[name=instanceCount]').value = data.instanceCount;
-                    document.getElementById('instance-count-display').innerText = data.instanceCount;
                 }
-                if(data.isParallel !== undefined) {
-                    form.querySelector('[name=isParallel]').checked = data.isParallel;
+                if(data.concurrentLimit) {
+                    form.querySelector('[name=concurrentLimit]').value = data.concurrentLimit;
+                } else if(data.isParallel !== undefined) {
+                    // Backwards compatibility for templates using old boolean
+                     form.querySelector('[name=concurrentLimit]').value = data.isParallel ? 10 : 1;
                 }
             }
 
@@ -271,8 +268,17 @@
         config.backgroundStory = form.querySelector('[name=backgroundStory]').value;
         config.scenarioDescription = form.querySelector('[name=scenarioDescription]').value;
         config.coreQuestion = form.querySelector('[name=coreQuestion]').value;
-        config.instanceCount = form.querySelector('[name=instanceCount]').value;
-        config.isParallel = form.querySelector('[name=isParallel]').checked;
+        config.instanceCount = parseInt(form.querySelector('[name=instanceCount]').value) || 50; // Default if empty? or alert? User said >=1.
+        config.concurrentLimit = parseInt(form.querySelector('[name=concurrentLimit]').value) || 10;
+        
+        if (config.instanceCount < 1) {
+            alert("实例数量必须 >= 1");
+            return;
+        }
+        if (config.concurrentLimit < 1) {
+            alert("并行线程数必须 >= 1");
+            return;
+        }
         
         // Extract Options
         config.options = [];

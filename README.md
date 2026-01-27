@@ -77,7 +77,7 @@
 
 1.  **克隆或下载本项目**
     ```bash
-    git clone https://github.com/your-username/Longer-AI-Investigator.git
+    git clone https://github.com/daiyulong2024/Longer-AI-Investigator.git
     ```
 2.  **直接打开**
     进入文件夹，双击 `index.html` 在浏览器中打开即可！

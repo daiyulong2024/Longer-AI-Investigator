@@ -1,8 +1,8 @@
 /**
- * Shared Role Templates for Longer AI Investigator
+ * Longer AI Investigator - 共享角色模板
  */
 window.ROLE_TEMPLATES = {
-    // Original 3
+    // 原始 3 个
     student: {
         personaName: "高中生",
         behaviorLogic: "理性分析",
@@ -33,7 +33,7 @@ window.ROLE_TEMPLATES = {
         option_B: "出于同情，开具替代药物并承担风险",
         option_C: "建议患者去其他机构寻求慈善援助"
     },
-    // New Roles
+    // 新增角色
     teacher: {
         personaName: "中学教师",
         behaviorLogic: "理性分析",

@@ -126,7 +126,7 @@
         const id = getQueryParam('id');
         if (!id) return;
         
-        // Bind Export Button
+        // 绑定导出按钮
         const exportBtn = document.getElementById('btn-export');
         if(exportBtn) {
             exportBtn.onclick = () => exportExperiment(id);
@@ -148,7 +148,7 @@
         }
         document.getElementById('metric-top').innerText = `Option ${maxOpt}`;
         
-        // Chart
+        // 图表
         const chartContainer = document.getElementById('chart-container');
         let chartHtml = '';
         const options = exp.config.options;
@@ -157,7 +157,7 @@
         options.forEach(opt => {
              const count = exp.stats.options[opt.key] || 0;
              const percent = Math.round((count / total) * 100);
-             const height = Math.max(percent, 5); // min height
+             const height = Math.max(percent, 5); // 最小高度
              const isWinner = opt.key === maxOpt;
              const colorClass = isWinner ? 'bg-primary' : 'bg-slate-200';
              
@@ -177,9 +177,9 @@
         });
         chartContainer.innerHTML = chartHtml;
         
-        // Table Logic
-        let currentLogs = exp.logs.slice(-100).reverse(); // Default view
-        let sortDir = 0; // 0: none, 1: asc, -1: desc
+        // 表格逻辑
+        let currentLogs = exp.logs.slice(-100).reverse(); // 默认视图
+        let sortDir = 0; // 0: 无, 1: 升序, -1: 降序
         
         window.renderTable = function(logs) {
             const tbody = document.getElementById('table-body');
@@ -199,17 +199,17 @@
         window.handleSort = function(field) {
             const icon = document.getElementById(`sort-icon-${field}`);
             
-            // Toggle direction
+            // 切换方向
             if (sortDir === 0 || sortDir === -1) sortDir = 1;
             else sortDir = -1;
             
-            // Update Icon
+            // 更新图标
             if (sortDir === 1) icon.innerText = 'keyboard_arrow_up';
             else icon.innerText = 'keyboard_arrow_down';
             icon.classList.add('text-primary');
             icon.classList.remove('text-slate-400');
 
-            // Sort
+            // 排序
             const sorted = [...currentLogs].sort((a, b) => {
                 if (a[field] < b[field]) return -1 * sortDir;
                 if (a[field] > b[field]) return 1 * sortDir;
@@ -219,7 +219,7 @@
             renderTable(sorted);
         }
         
-        // Initial Render
+        // 初始渲染
         renderTable(currentLogs);
     });
 </script>

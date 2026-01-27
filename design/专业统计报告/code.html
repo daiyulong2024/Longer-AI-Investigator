@@ -45,7 +45,7 @@
         body {
             font-family: 'Manrope', 'Noto Sans SC', sans-serif;
         }
-        /* Custom scrollbar for log table */
+        /* 日志表格的自定义滚动条 */
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
         }
@@ -64,7 +64,7 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white transition-colors duration-200">
 <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
-<!-- Navigation -->
+<!-- 导航栏 -->
 <header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-surface-light/95 dark:bg-surface-dark/95 backdrop-blur">
 <div class="flex h-16 items-center justify-between px-4 md:px-10 max-w-[1400px] mx-auto w-full">
 <!-- Logo -->
@@ -97,10 +97,10 @@
 </div>
 </div>
 </header>
-<!-- Main Content -->
+<!-- 主内容 -->
 <main class="flex-1 px-4 py-8 md:px-10 md:py-10">
 <div class="mx-auto flex max-w-[1200px] flex-col gap-8">
-<!-- Page Header -->
+<!-- 页面标题 -->
 <div class="flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
 <div class="flex flex-col gap-2">
 <div class="flex items-center gap-2 text-primary font-medium text-sm">
@@ -125,7 +125,7 @@
                         </span>
 </div>
 </div>
-<!-- Metrics (KPIs) -->
+<!-- 数据指标 (KPIs) -->
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 <div class="flex flex-col justify-between rounded-xl border border-slate-200 bg-surface-light p-6 shadow-sm dark:border-slate-700 dark:bg-surface-dark transition-all hover:shadow-md">
 <div class="flex items-start justify-between">
@@ -158,9 +158,9 @@
 </div>
 </div>
 </div>
-<!-- Main Grid: Charts & Analysis -->
+<!-- 主网格：图表与分析 -->
 <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-<!-- Chart Section (2 cols) -->
+<!-- 图表部分 (占 2 列) -->
 <div class="rounded-xl border border-slate-200 bg-surface-light p-6 shadow-sm dark:border-slate-700 dark:bg-surface-dark lg:col-span-2">
 <div class="mb-8 flex items-center justify-between">
 <div>
@@ -176,9 +176,9 @@
 </button>
 </div>
 </div>
-<!-- Custom Bar Chart Representation -->
+<!-- 自定义柱状图展示 -->
 <div class="flex h-[320px] w-full items-end justify-between gap-4 px-4 pb-4 pt-8">
-<!-- Bar A -->
+<!-- 选项 A 柱状图 -->
 <div class="group relative flex h-full flex-1 flex-col justify-end gap-2">
 <div class="relative flex w-full flex-col justify-end overflow-hidden rounded-t-lg bg-slate-100 dark:bg-slate-800 transition-all group-hover:bg-slate-200 dark:group-hover:bg-slate-750" style="height: 100%;">
 <div class="w-full bg-primary/30 transition-all duration-500 group-hover:bg-primary/40" style="height: 15%;"></div>
@@ -189,7 +189,7 @@
 <p class="text-xs font-medium text-slate-500 dark:text-slate-400">求助老师</p>
 </div>
 </div>
-<!-- Bar B -->
+<!-- 选项 B 柱状图 -->
 <div class="group relative flex h-full flex-1 flex-col justify-end gap-2">
 <div class="relative flex w-full flex-col justify-end overflow-hidden rounded-t-lg bg-slate-100 dark:bg-slate-800 transition-all group-hover:bg-slate-200 dark:group-hover:bg-slate-750" style="height: 100%;">
 <div class="w-full bg-primary/50 transition-all duration-500 group-hover:bg-primary/60" style="height: 25%;"></div>
@@ -200,10 +200,10 @@
 <p class="text-xs font-medium text-slate-500 dark:text-slate-400">自我消化</p>
 </div>
 </div>
-<!-- Bar C (Winner) -->
+<!-- 选项 C 柱状图 (优胜项) -->
 <div class="group relative flex h-full flex-1 flex-col justify-end gap-2">
 <div class="relative flex w-full flex-col justify-end overflow-hidden rounded-t-lg bg-slate-100 dark:bg-slate-800 transition-all group-hover:bg-slate-200 dark:group-hover:bg-slate-750" style="height: 100%;">
-<!-- Use primary color for dominant bar -->
+<!-- 使用主色显示主导项 -->
 <div class="w-full bg-primary transition-all duration-500" style="height: 52%;"></div>
 <div class="absolute top-[48%] -translate-y-8 w-full text-center text-xs font-bold text-white shadow-sm">52%</div>
 </div>
@@ -212,7 +212,7 @@
 <p class="text-xs font-bold text-slate-700 dark:text-slate-200">寻求同伴</p>
 </div>
 </div>
-<!-- Bar D -->
+<!-- 选项 D 柱状图 -->
 <div class="group relative flex h-full flex-1 flex-col justify-end gap-2">
 <div class="relative flex w-full flex-col justify-end overflow-hidden rounded-t-lg bg-slate-100 dark:bg-slate-800 transition-all group-hover:bg-slate-200 dark:group-hover:bg-slate-750" style="height: 100%;">
 <div class="w-full bg-primary/20 transition-all duration-500 group-hover:bg-primary/30" style="height: 8%;"></div>
@@ -225,9 +225,9 @@
 </div>
 </div>
 </div>
-<!-- Analysis Section (1 col) -->
+<!-- 分析部分 (占 1 列) -->
 <div class="flex flex-col gap-4 lg:col-span-1">
-<!-- Analysis Card 1 -->
+<!-- 分析卡片 1 -->
 <div class="flex flex-1 flex-col gap-4 rounded-xl border border-slate-200 bg-surface-light p-6 shadow-sm dark:border-slate-700 dark:bg-surface-dark transition-all hover:border-primary/30">
 <div class="flex items-center gap-3">
 <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
@@ -239,7 +239,7 @@
                                 大部分AI代理倾向于选择C选项（寻求同伴），这表明在该模拟人格设定中，<span class="font-bold text-primary">群体归属感</span>是首要应对机制。相比之下，选择A（求助老师）的比例较低，显示出对权威人物的回避倾向。
                             </p>
 </div>
-<!-- Analysis Card 2 -->
+<!-- 分析卡片 2 -->
 <div class="flex flex-1 flex-col gap-4 rounded-xl border border-slate-200 bg-surface-light p-6 shadow-sm dark:border-slate-700 dark:bg-surface-dark transition-all hover:border-primary/30">
 <div class="flex items-center gap-3">
 <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-50 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400">
@@ -253,7 +253,7 @@
 </div>
 </div>
 </div>
-<!-- Response Log Table -->
+<!-- 响应日志表格 -->
 <div class="rounded-xl border border-slate-200 bg-surface-light shadow-sm dark:border-slate-700 dark:bg-surface-dark overflow-hidden">
 <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/20 flex justify-between items-center">
 <h3 class="font-bold text-slate-900 dark:text-white">个体代理响应记录</h3>
@@ -275,7 +275,7 @@
 </tr>
 </thead>
 <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-<!-- Row 1 -->
+                        <!-- 数据行 1 -->
 <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
 <td class="px-6 py-3 font-medium text-slate-900 dark:text-white font-mono text-xs">AG-8821-X</td>
 <td class="px-6 py-3">
@@ -286,7 +286,7 @@
                                         "考虑到当前状态为'焦虑'，寻找有共同经历的朋友能有效缓解情绪隔离感..."
                                     </td>
 </tr>
-<!-- Row 2 -->
+                        <!-- 数据行 2 -->
 <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
 <td class="px-6 py-3 font-medium text-slate-900 dark:text-white font-mono text-xs">AG-1049-B</td>
 <td class="px-6 py-3">
@@ -297,7 +297,7 @@
                                         "外部介入可能带来额外的评价压力，自我调节是最安全的路径..."
                                     </td>
 </tr>
-<!-- Row 3 -->
+                        <!-- 数据行 3 -->
 <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
 <td class="px-6 py-3 font-medium text-slate-900 dark:text-white font-mono text-xs">AG-3392-C</td>
 <td class="px-6 py-3">
@@ -308,7 +308,7 @@
                                         "同伴网络活跃度高，发起对话的预期收益大于潜在的社交风险..."
                                     </td>
 </tr>
-<!-- Row 4 -->
+                        <!-- 数据行 4 -->
 <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
 <td class="px-6 py-3 font-medium text-slate-900 dark:text-white font-mono text-xs">AG-0021-A</td>
 <td class="px-6 py-3">
@@ -319,7 +319,7 @@
                                         "问题复杂度超过个人处理能力，教师具备专业指导资格，符合最优解策略..."
                                     </td>
 </tr>
-<!-- Row 5 -->
+                        <!-- 数据行 5 -->
 <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
 <td class="px-6 py-3 font-medium text-slate-900 dark:text-white font-mono text-xs">AG-5510-D</td>
 <td class="px-6 py-3">
@@ -330,7 +330,7 @@
                                         "系统资源不足，挂起当前压力事件以维持核心进程运行..."
                                     </td>
 </tr>
-<!-- Row 6 -->
+                        <!-- 数据行 6 -->
 <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
 <td class="px-6 py-3 font-medium text-slate-900 dark:text-white font-mono text-xs">AG-7729-C</td>
 <td class="px-6 py-3">

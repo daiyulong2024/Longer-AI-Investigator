@@ -151,9 +151,9 @@
         const statusBadge = document.getElementById('status-badge');
         const runningWarning = document.getElementById('running-warning');
         
-        logContainer.innerHTML = ''; // clear
+        logContainer.innerHTML = ''; // 清除
 
-        // If already completed, show report button immediately
+        // 如果已完成，立即显示报告按钮
         if (experiment.status === 'completed') {
              viewReportBtn.classList.remove('hidden');
              if(runningWarning) runningWarning.classList.add('hidden');
@@ -164,7 +164,7 @@
              return; 
         }
 
-        // Run
+        // 运行
         runSimulation(id, (updatedExp) => {
             updateUI(updatedExp);
         }, (finalExp) => {
@@ -185,7 +185,7 @@
             progressPercent.innerText = `${percent}%`;
             progressText.innerText = `${current} / ${total}`;
             
-            // Logs
+            // 日志
             const lastLog = exp.logs[exp.logs.length - 1];
             if (lastLog) {
                  const logHtml = `
@@ -195,15 +195,15 @@
                         <span class="text-slate-700 dark:text-slate-300">Selected <span class="font-bold text-primary">${lastLog.option}</span>: ${lastLog.reasoning}</span>
                     </div>
                 `;
-                logContainer.insertAdjacentHTML('afterbegin', logHtml); // newest on top
-                // Limit logs
+                logContainer.insertAdjacentHTML('afterbegin', logHtml); // 最新在顶部
+                // 限制日志数量
                 if (logContainer.children.length > 50) logContainer.lastElementChild.remove();
             }
 
-            // Side Stats
+            // 侧边栏统计
             let statsHtml = '';
             for (const [opt, count] of Object.entries(exp.stats.options)) {
-                // Find option text
+                // 查找选项文本
                 const optText = exp.config.options.find(o => o.key === opt)?.text || opt;
                 const ratio = ((count / total) * 100).toFixed(1);
                 statsHtml += `

@@ -144,13 +144,13 @@
 </main>
 <script src="js/app.js"></script>
 <script>
-    // Dashboard Logic
+    // 仪表盘逻辑
     document.addEventListener('DOMContentLoaded', () => {
         const grid = document.getElementById('experiments-grid');
         const searchInput = document.getElementById('search-input');
         const allExperiments = getExperiments().reverse();
         
-        // Global Filter State
+        // 全局筛选状态
         let currentFilter = 'all';
         let isBatchMode = false;
         let selectedExpIds = new Set();
@@ -159,7 +159,7 @@
             let html = '';
             let unviewedCount = 0;
             
-            // Add "New" Card first ONLY if filter is 'all' AND not in batch mode
+            // 仅当筛选条件为 'all' 且不在批量模式下时添加“新建”卡片
             if (currentFilter === 'all' && !isBatchMode) {
                 html += `
                 <a href="design.html" class="border-2 border-dashed border-[#dbe0e6] dark:border-[#2a3544] rounded-xl flex flex-col items-center justify-center p-8 bg-white/50 dark:bg-[#161f2a]/50 hover:border-primary/50 transition-colors cursor-pointer group min-h-[280px]">
@@ -187,15 +187,15 @@
 
                     const link = isRunning ? `monitor.html?id=${exp.id}` : (isCompleted ? `report.html?id=${exp.id}` : `design.html?id=${exp.id}`);
                     const actionText = isRunning ? '查看监控' : (isCompleted ? '详情报告' : '继续编辑');
-                    // Add markExperimentViewed call for completed experiments
+                    // 为已完成的实验添加 markExperimentViewed 调用
                     const clickAttr = isCompleted ? `onclick="markExperimentViewed('${exp.id}')"` : '';
                     
                     const title = exp.config.experimentName || (exp.config.personaName ? `${exp.config.personaName} 的抉择` : '未命名实验');
                     
-                    // Card Dot
+                    // 卡片小红点
                     const unviewedDot = (isUnviewed && !isBatchMode) ? `<div class="absolute -top-1 -left-1 size-3 rounded-full bg-red-500 border-2 border-white dark:border-[#161f2a]"></div>` : '';
                     
-                    // Batch Checkbox
+                    // 批量选择框
                     let batchCheckbox = '';
                     if (isBatchMode) {
                         const isChecked = selectedExpIds.has(exp.id) ? 'checked' : '';
@@ -252,7 +252,7 @@
             }
             grid.innerHTML = html;
             
-            // Update Bell Notification
+            // 更新通知徽标
             const badge = document.getElementById('notification-badge');
             const btn = document.getElementById('notification-btn');
             if (unviewedCount > 0) {
@@ -265,10 +265,10 @@
             }
         }
 
-        // Initial Render
+        // 初始渲染
         renderExperiments(allExperiments);
 
-        // Search Listener
+        // 搜索监听器
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             const filtered = allExperiments.filter(exp => {
@@ -279,19 +279,19 @@
             renderExperiments(filtered);
         });
         
-        // Tab Filtering Logic
+        // 标签页筛选逻辑
         const tabs = {
             'all': document.getElementById('tab-all'),
             'running': document.getElementById('tab-running'),
             'completed': document.getElementById('tab-completed')
         };
         
-        // currentFilter is defined at top
+        // currentFilter 定义在顶部
 
         function setActiveTab(filter) {
             currentFilter = filter;
             
-            // Update UI
+            // 更新 UI
             Object.values(tabs).forEach(tab => {
                 tab.className = "px-6 py-3 text-sm font-medium text-[#617289] dark:text-[#94a3b8] hover:text-[#111418] dark:hover:text-white border-b-2 border-transparent transition-colors";
             });
@@ -299,7 +299,7 @@
             const activeTab = tabs[filter];
             activeTab.className = "px-6 py-3 text-sm font-bold border-b-2 border-primary text-primary transition-colors";
             
-            // Filter Experiments
+            // 筛选实验
             let filtered = allExperiments;
             if (filter === 'running') {
                 filtered = allExperiments.filter(e => e.status === 'running');
@@ -314,12 +314,12 @@
         tabs.running.addEventListener('click', () => setActiveTab('running'));
         tabs.completed.addEventListener('click', () => setActiveTab('completed'));
         
-        // --- Menu Logic ---
+        // --- 菜单逻辑 ---
         window.toggleMenu = function(id, event) {
             event.stopPropagation();
-            event.preventDefault(); // Prevent link click if nested
+            event.preventDefault(); // 防止链接点击（如果嵌套）
             
-            // Close all other menus
+            // 关闭其他所有菜单
             document.querySelectorAll('[id^="menu-"]').forEach(el => {
                 if (el.id !== `menu-${id}`) el.classList.add('hidden');
             });
@@ -332,26 +332,26 @@
         
         window.handleExport = function(id) {
             exportExperiment(id);
-            // Close menu
+            // 关闭菜单
             document.getElementById(`menu-${id}`).classList.add('hidden');
         };
         
         window.handleDelete = function(id) {
             if(confirm('确定要删除这个实验吗？此操作无法撤销。')) {
                 deleteExperiment(id);
-                // Refresh list
+                // 刷新列表
                 const idx = allExperiments.findIndex(e => e.id === id);
                 if (idx > -1) allExperiments.splice(idx, 1);
-                setActiveTab(currentFilter); // Re-render
+                setActiveTab(currentFilter); // 重新渲染
             }
         };
          
-        // Close menus when clicking outside
+        // 点击外部关闭菜单
         document.addEventListener('click', () => {
              document.querySelectorAll('[id^="menu-"]').forEach(el => el.classList.add('hidden'));
         });
         
-        // --- Batch Mode Logic ---
+        // --- 批量模式逻辑 ---
         const btnBatch = document.getElementById('btn-batch-mode');
         const btnDeleteSelected = document.getElementById('btn-delete-selected');
         
@@ -367,14 +367,14 @@
                 btnDeleteSelected.classList.add('hidden');
                 selectedExpIds.clear();
             }
-            setActiveTab(currentFilter); // Re-render
+            setActiveTab(currentFilter); // 重新渲染
         });
         
         window.toggleSelection = function(id, checked) {
             if (checked) selectedExpIds.add(id);
             else selectedExpIds.delete(id);
             
-            // Update delete button text
+            // 更新删除按钮文本
             const count = selectedExpIds.size;
             btnDeleteSelected.innerHTML = `<span class="material-symbols-outlined text-sm">delete</span> 删除选中 (${count})`;
         };
@@ -385,7 +385,7 @@
              if(confirm(`确定要删除选中的 ${selectedExpIds.size} 个实验吗？`)) {
                  selectedExpIds.forEach(id => deleteExperiment(id));
                  
-                 // Update data
+                 // 更新数据
                  const ids = Array.from(selectedExpIds);
                  for (let i = allExperiments.length - 1; i >= 0; i--) {
                      if (ids.includes(allExperiments[i].id)) {
@@ -393,7 +393,7 @@
                      }
                  }
                  
-                 // Reset Mode
+                 // 重置模式
                  isBatchMode = false;
                  selectedExpIds.clear();
                  btnBatch.innerText = '批量管理';

@@ -1,11 +1,11 @@
 /**
- * Longer AI Investigator - Core Logic
+ * Longer AI Investigator - 核心逻辑
  */
 
 const STORAGE_KEY = 'longer_ai_experiments';
 const CURRENT_EXP_KEY = 'longer_ai_current_exp_id';
 
-// --- State Management ---
+// --- 状态管理 ---
 
 function getExperiments() {
     const data = localStorage.getItem(STORAGE_KEY);
@@ -42,14 +42,14 @@ function exportExperiment(id) {
     const exp = getExperiment(id);
     if (!exp) return;
     
-    // CSV Header
+    // CSV 头部
     let csvContent = "data:text/csv;charset=utf-8,";
     csvContent += "AgentID,Persona,Option,Reasoning,Time(ms),Timestamp\n";
     
-    // Rows
+    // 数据行
     if (exp.logs && exp.logs.length > 0) {
         exp.logs.forEach(log => {
-            // Escape special chars in reasoning (commas, quotes, newlines)
+            // 转义 reasoning 中的特殊字符 (逗号, 引号, 换行符)
             const safeReasoning = `"${(log.reasoning || '').replace(/"/g, '""')}"`;
             const row = `${log.agentId},${exp.config.personaName},${log.option},${safeReasoning},${log.time},${log.timestamp}`;
             csvContent += row + "\n";
@@ -79,12 +79,12 @@ function createExperiment(config) {
     const experiment = {
         id: id,
         config: config,
-        status: 'draft', // draft, running, completed
+        status: 'draft', // draft (草稿), running (运行中), completed (已完成)
         createdAt: new Date().toISOString(),
-        logs: [], // { agentId, option, reasoning, time, timestamp }
+        logs: [], // 日志列表: { agentId, option, reasoning, time, timestamp }
         stats: {
             total: 0,
-            options: {}, // { 'A': count, 'B': count ... }
+            options: {}, // 选项统计: { 'A': count, 'B': count ... }
             times: []
         }
     };
@@ -92,7 +92,7 @@ function createExperiment(config) {
     return id;
 }
 
-// --- Simulation Logic ---
+// --- 模拟逻辑 ---
 
 async function runSimulation(experimentId, onProgress, onComplete) {
     const experiment = getExperiment(experimentId);
@@ -103,21 +103,21 @@ async function runSimulation(experimentId, onProgress, onComplete) {
     
     const config = experiment.config;
     const totalAgents = parseInt(config.instanceCount) || 10;
-    // Handle new concurrentLimit or fallback to old isParallel logic
+    // 处理新的并发限制配置，或回退到旧的并行逻辑
     let batchSize = 1;
     if (config.concurrentLimit) {
         batchSize = parseInt(config.concurrentLimit);
     } else if (config.isParallel) {
-        batchSize = 10; // Default for old experiments
+        batchSize = 10; // 旧版实验的默认值
     }
     if (batchSize < 1) batchSize = 1;
     
-    // Initialize stats if empty
+    // 如果为空则初始化统计数据
     experiment.stats = { total: 0, options: {}, times: [] };
     experiment.logs = [];
 
-    // Mock API Call delay and response
-    // Real API Configuration
+    // 模拟 API 调用延迟和响应
+    // 真实 API 配置
     const apiKey = localStorage.getItem('openai_api_key');
     
     if (!apiKey) {
@@ -131,17 +131,17 @@ async function runSimulation(experimentId, onProgress, onComplete) {
     const processAgent = async (index) => {
         const agentId = `AG-${Math.floor(Math.random()*9000)+1000}-${String.fromCharCode(65 + Math.floor(Math.random()*26))}`;
         
-        // 1. Prepare Data
+        // 1. 准备数据
         const options = config.options || [];
         const optionKeys = options.map(o => o.key);
         let selectedKey = optionKeys[Math.floor(Math.random() * optionKeys.length)];
         let reasoning = "";
         let delay = Math.floor(Math.random() * 2000) + 500;
 
-        // 2. Decide: Real API vs Mock
+        // 2. 决策：使用真实 API vs 模拟
         if (apiKey) {
             try {
-                // Construct Prompt
+                // 构建提示词
                 const systemPrompt = `You are a participant in a social experiment. You need to act according to your persona and make a choice.
 Persona: ${config.personaName || 'Unknown'}
 Background: ${config.backgroundStory || 'None'}
@@ -185,16 +185,16 @@ Please make a choice. Output ONLY raw JSON, no markdown formatting.`;
                         }
                         reasoning = parsed.reasoning || content;
                     } catch (e) {
-                         // Fallback if not JSON
+                        // 如果不是 JSON 则降级处理
                          reasoning = content;
-                         // Try to find option key in content
+                         // 尝试在内容中查找选项键
                          const foundKey = optionKeys.find(k => content.includes(k));
                          if(foundKey) selectedKey = foundKey;
                     }
                 } else {
                     console.error("API Error", response.status);
                     reasoning = `(API Error: ${response.status}) 使用模拟数据`;
-                    // Fallback to mock logic below...
+                    // 降级到下方的模拟逻辑...
                 }
             } catch (e) {
                 console.error("Network Error", e);
@@ -202,11 +202,11 @@ Please make a choice. Output ONLY raw JSON, no markdown formatting.`;
             }
         }
 
-        // 3. Fallback / Mock Logic (if reasoning still empty)
+        // 3. 降级 / 模拟逻辑 (如果 reasoning 仍为空)
         if (!reasoning) {
             await new Promise(r => setTimeout(r, delay));
             
-            // Bias random selection based on persona
+            // 基于角色设定偏向随机选择
             const personaLower = (config.personaName || "").toLowerCase();
             if ((personaLower.includes('student') || personaLower.includes('中学生')) && optionKeys.includes('C')) {
                  if (Math.random() > 0.3) selectedKey = 'C';
@@ -222,7 +222,7 @@ Please make a choice. Output ONLY raw JSON, no markdown formatting.`;
             reasoning = reasoningTemplates[Math.floor(Math.random() * reasoningTemplates.length)];
         }
 
-        // Record Result
+        // 记录结果
         const log = {
             agentId,
             option: selectedKey,
@@ -231,28 +231,28 @@ Please make a choice. Output ONLY raw JSON, no markdown formatting.`;
             timestamp: new Date().toISOString()
         };
 
-        // Update local stat state
+        // 更新本地统计状态
         experiment.logs.push(log);
         experiment.stats.total++;
         experiment.stats.options[selectedKey] = (experiment.stats.options[selectedKey] || 0) + 1;
         experiment.stats.times.push(delay);
         
-        // Progress callback
+        // 进度回调
         if (onProgress) onProgress(experiment);
     };
 
     if (batchSize > 1) {
-        // Run in batches to avoid browser freeze if too many
+        // 分批运行以避免浏览器冻结（如果数量过多）
         for (let i = 0; i < totalAgents; i += batchSize) {
             const batch = [];
             for (let j = 0; j < batchSize && (i + j) < totalAgents; j++) {
                 batch.push(processAgent(i + j));
             }
             await Promise.all(batch);
-            saveExperiment(experiment); // Save intermediate
+            saveExperiment(experiment); // 保存中间状态
         }
     } else {
-        // Sequential
+        // 串行执行
         for (let i = 0; i < totalAgents; i++) {
             await processAgent(i);
             if (i % 5 === 0) saveExperiment(experiment);
@@ -265,7 +265,7 @@ Please make a choice. Output ONLY raw JSON, no markdown formatting.`;
     if (onComplete) onComplete(experiment);
 }
 
-// --- UI Helpers ---
+// --- UI 辅助函数 ---
 
 function formatTime(ms) {
     return ms + 'ms';
@@ -276,6 +276,6 @@ function getQueryParam(name) {
     return urlParams.get(name);
 }
 
-// Note: Real OpenAI integration would go here.
-// For now, we simulate to ensure the UI works perfectly as requested "Frontend code".
-// To add Real API, we would replace `processAgent` logic with a fetch to https://api.openai.com/v1/chat/completions
+// 注意: 真实的 OpenAI 集成将在此处。
+// 目前我们进行模拟以确保 UI 完美工作（按“前端代码”要求）。
+// 若要添加真实 API，我们将把 `processAgent` 逻辑替换为对 https://api.openai.com/v1/chat/completions 的 fetch 调用

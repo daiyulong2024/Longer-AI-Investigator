@@ -29,7 +29,7 @@
         }
     </script>
 <style>
-        /* Custom scrollbar for webkit */
+        /* Webkit浏览器的自定义滚动条 */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -79,7 +79,7 @@
 <!-- Stepper Navigation -->
 <div class="flex-1 overflow-y-auto py-6 px-4">
 <div class="flex flex-col gap-1">
-<!-- Step 1: Active -->
+<!-- 步骤 1：激活状态 -->
 <div class="group flex items-center gap-3 px-3 py-3 rounded-lg bg-primary/10 border-l-4 border-primary cursor-pointer transition-colors">
 <span class="material-symbols-outlined filled text-primary">person</span>
 <div class="flex flex-col">
@@ -87,9 +87,9 @@
 <span class="text-xs text-primary font-medium">Role Setting</span>
 </div>
 </div>
-<!-- Step Line -->
+<!-- 步骤分割线 -->
 <div class="ml-6 h-4 border-l border-[#e5e7eb] dark:border-[#4a5568]"></div>
-<!-- Step 2 -->
+<!-- 步骤 2 -->
 <div class="group flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#f8f9fa] dark:hover:bg-[#2d3748] border-l-4 border-transparent cursor-pointer transition-colors">
 <span class="material-symbols-outlined text-[#617289] dark:text-[#94a3b8]">landscape</span>
 <div class="flex flex-col">
@@ -97,9 +97,9 @@
 <span class="text-xs text-[#94a3b8]">Scenario Setup</span>
 </div>
 </div>
-<!-- Step Line -->
+<!-- 步骤分割线 -->
 <div class="ml-6 h-4 border-l border-[#e5e7eb] dark:border-[#4a5568]"></div>
-<!-- Step 3 -->
+<!-- 步骤 3 -->
 <div class="group flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#f8f9fa] dark:hover:bg-[#2d3748] border-l-4 border-transparent cursor-pointer transition-colors">
 <span class="material-symbols-outlined text-[#617289] dark:text-[#94a3b8]">quiz</span>
 <div class="flex flex-col">
@@ -107,9 +107,9 @@
 <span class="text-xs text-[#94a3b8]">Question &amp; Options</span>
 </div>
 </div>
-<!-- Step Line -->
+<!-- 步骤分割线 -->
 <div class="ml-6 h-4 border-l border-[#e5e7eb] dark:border-[#4a5568]"></div>
-<!-- Step 4 -->
+<!-- 步骤 4 -->
 <div class="group flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#f8f9fa] dark:hover:bg-[#2d3748] border-l-4 border-transparent cursor-pointer transition-colors">
 <span class="material-symbols-outlined text-[#617289] dark:text-[#94a3b8]">tune</span>
 <div class="flex flex-col">
@@ -135,7 +135,7 @@
 <!-- Scrollable Content -->
 <div class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark">
 <div class="max-w-[960px] mx-auto px-8 py-10 pb-32">
-<!-- Page Heading -->
+<!-- 实验配置中心头部 -->
 <div class="flex flex-col gap-2 mb-8">
 <div class="flex items-center justify-between">
 <div>
@@ -147,7 +147,7 @@
 </div>
 </div>
 </div>
-<!-- Form Section 1: Role Setting -->
+<!-- 表单部分 1：角色设定 -->
 <section class="bg-white dark:bg-[#1a202c] rounded-xl shadow-sm border border-[#e5e7eb] dark:border-[#2d3748] mb-6 overflow-hidden">
 <div class="px-6 py-4 border-b border-[#f0f2f4] dark:border-[#2d3748] flex items-center justify-between bg-white dark:bg-[#1a202c]">
 <div class="flex items-center gap-3">
@@ -158,7 +158,7 @@
 </div>
 </div>
 <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-<!-- Role Name -->
+<!-- 角色名称 -->
 <div class="col-span-1">
 <label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0] mb-2">角色名称 (Persona Name)</label>
 <div class="relative">
@@ -166,7 +166,7 @@
 <input class="w-full pl-10 pr-4 py-3 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder-[#94a3b8]" placeholder="例如：中学生 (e.g., Middle School Student)" type="text" value="中学生 A"/>
 </div>
 </div>
-<!-- Behavioral Logic -->
+<!-- 行为逻辑 -->
 <div class="col-span-1">
 <label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0] mb-2">行为逻辑 (Behavioral Logic)</label>
 <select class="w-full px-4 py-3 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer">
@@ -176,7 +176,7 @@
 <option>从众心理型 (Herd Mentality)</option>
 </select>
 </div>
-<!-- Background Story -->
+<!-- 背景故事 -->
 <div class="col-span-1 md:col-span-2">
 <label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0] mb-2">背景故事 (Background Story)</label>
 <textarea class="w-full p-4 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all min-h-[120px] resize-y placeholder-[#94a3b8]" placeholder="描述角色的成长环境、性格特征等..."></textarea>
@@ -184,7 +184,7 @@
 </div>
 </div>
 </section>
-<!-- Form Section 2: Scenario Setup -->
+<!-- 表单部分 2：场景预设 -->
 <section class="bg-white dark:bg-[#1a202c] rounded-xl shadow-sm border border-[#e5e7eb] dark:border-[#2d3748] mb-6 overflow-hidden">
 <div class="px-6 py-4 border-b border-[#f0f2f4] dark:border-[#2d3748] flex items-center justify-between">
 <div class="flex items-center gap-3">
@@ -210,7 +210,7 @@
 </div>
 </div>
 </section>
-<!-- Form Section 3: Question & Options -->
+<!-- 表单部分 3：问卷与选项 -->
 <section class="bg-white dark:bg-[#1a202c] rounded-xl shadow-sm border border-[#e5e7eb] dark:border-[#2d3748] mb-6 overflow-hidden">
 <div class="px-6 py-4 border-b border-[#f0f2f4] dark:border-[#2d3748] flex items-center justify-between">
 <div class="flex items-center gap-3">
@@ -226,22 +226,22 @@
 <label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0] mb-2">核心问题 (Core Question)</label>
 <input class="w-full px-4 py-3 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium" placeholder="例如：面对这种情况，你会如何选择？ (e.g., How would you choose in this situation?)" type="text" value=""/>
 </div>
-<!-- Options List -->
+<!-- 选项列表 -->
 <div class="flex flex-col gap-3">
 <label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0]">选项设置 (Answer Options)</label>
-<!-- Option A -->
+<!-- 选项 A -->
 <div class="flex items-center gap-3 group">
 <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-sm font-bold text-slate-500 dark:text-slate-300">A</div>
 <input class="flex-1 px-4 py-2.5 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="选项 A 内容" type="text" value="保持沉默，不采取任何行动"/>
 <button class="p-2 text-slate-400 hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
 </div>
-<!-- Option B -->
+<!-- 选项 B -->
 <div class="flex items-center gap-3 group">
 <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-sm font-bold text-slate-500 dark:text-slate-300">B</div>
 <input class="flex-1 px-4 py-2.5 rounded-lg bg-white dark:bg-[#2d3748] border border-[#dbe0e6] dark:border-[#4a5568] text-[#111418] dark:text-white text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="选项 B 内容" type="text" value="主动干预，试图改变现状"/>
 <button class="p-2 text-slate-400 hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
 </div>
-<!-- Add Option Button -->
+<!-- 添加选项按钮 -->
 <div class="pl-11 mt-1">
 <button class="flex items-center gap-2 text-primary hover:text-blue-700 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-primary/5 transition-colors">
 <span class="material-symbols-outlined text-[18px]">add</span>
@@ -251,7 +251,7 @@
 </div>
 </div>
 </section>
-<!-- Form Section 4: Parameters -->
+<!-- 表单部分 4：执行参数 -->
 <section class="bg-white dark:bg-[#1a202c] rounded-xl shadow-sm border border-[#e5e7eb] dark:border-[#2d3748] mb-6 overflow-hidden">
 <div class="px-6 py-4 border-b border-[#f0f2f4] dark:border-[#2d3748] flex items-center justify-between">
 <div class="flex items-center gap-3">
@@ -262,7 +262,7 @@
 </div>
 </div>
 <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-<!-- Model Selection -->
+<!-- 模型选择 -->
 <div class="col-span-1">
 <label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0] mb-2">模型选择 (API Model)</label>
 <div class="relative">
@@ -275,7 +275,7 @@
 <span class="absolute right-3 top-3.5 text-[#94a3b8] material-symbols-outlined text-[20px] pointer-events-none">expand_more</span>
 </div>
 </div>
-<!-- Instance Count -->
+<!-- 实例数量 -->
 <div class="col-span-1">
 <div class="flex justify-between mb-2">
 <label class="block text-sm font-medium text-[#111418] dark:text-[#e2e8f0]">AI 实例数量 (Instance Count)</label>
@@ -287,7 +287,7 @@
 <span class="text-xs text-[#64748b]">500</span>
 </div>
 </div>
-<!-- Toggles -->
+<!-- 开关选项 -->
 <div class="col-span-1 md:col-span-2 flex flex-col sm:flex-row gap-6 sm:gap-12 border-t border-[#f0f2f4] dark:border-[#2d3748] pt-6 mt-2">
 <div class="flex items-center justify-between gap-4">
 <div class="flex flex-col">
@@ -314,7 +314,7 @@
 </section>
 </div>
 </div>
-<!-- Sticky Action Footer -->
+<!-- 悬浮操作底部栏 -->
 <div class="absolute bottom-0 w-full bg-white dark:bg-[#1a202c] border-t border-[#e5e7eb] dark:border-[#2d3748] px-8 py-4 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
 <div class="max-w-[960px] mx-auto flex justify-between items-center">
 <div class="text-sm text-[#64748b]">

@@ -98,7 +98,7 @@
 <script src="js/app.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Theme Check
+        // 主题检查
         const isDark = document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
         document.getElementById('theme-toggle').checked = isDark;
         if(isDark) document.documentElement.classList.add('dark');
@@ -115,7 +115,7 @@
     });
 
     function toggleTheme() {
-        // Triggered by checkbox change listener
+        // 由复选框更改侦听器触发
     }
 
     function clearData() {

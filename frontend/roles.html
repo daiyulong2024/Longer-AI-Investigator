@@ -45,29 +45,35 @@
         </div>
     </div>
 </header>
-<main class="max-w-[1440px] mx-auto p-8">
+    <main class="max-w-full mx-auto p-8">
     <h1 class="text-3xl font-bold mb-6">可用角色模板</h1>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Template 1 -->
-        <div class="bg-white p-6 rounded-xl border border-gray-200">
-            <h3 class="text-xl font-bold mb-2">高中生 (Student)</h3>
-            <p class="text-gray-500 text-sm mb-4">Facing academic pressure, sensitive to peer opinion.</p>
-            <a href="design.html?template=student" class="block w-full text-center bg-primary text-white py-2 rounded-lg font-bold">使用模板</a>
-        </div>
-         <!-- Template 2 -->
-        <div class="bg-white p-6 rounded-xl border border-gray-200">
-            <h3 class="text-xl font-bold mb-2">企业经理 (Manager)</h3>
-            <p class="text-gray-500 text-sm mb-4">Results-oriented, logical, low emotional expression.</p>
-            <a href="design.html?template=manager" class="block w-full text-center bg-primary text-white py-2 rounded-lg font-bold">使用模板</a>
-        </div>
-         <!-- Template 3 -->
-        <div class="bg-white p-6 rounded-xl border border-gray-200">
-            <h3 class="text-xl font-bold mb-2">全科医生 (Doctor)</h3>
-            <p class="text-gray-500 text-sm mb-4">Empathetic yet objective, analytical approach.</p>
-            <a href="design.html?template=doctor" class="block w-full text-center bg-primary text-white py-2 rounded-lg font-bold">使用模板</a>
-        </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6" id="templates-grid">
+        <!-- Content populated by JS -->
+        <div class="col-span-full text-center py-10 text-gray-400">Loading templates...</div>
     </div>
 </main>
+<script src="js/templates.js"></script>
 <script src="js/app.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const grid = document.getElementById('templates-grid');
+        let html = '';
+        
+        for (const [key, data] of Object.entries(ROLE_TEMPLATES)) {
+            html += `
+            <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow flex flex-col h-full">
+                <h3 class="text-xl font-bold mb-2 text-[#111418]">${data.personaName} (${key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')})</h3>
+                <p class="text-gray-500 text-sm mb-4 flex-1">${data.backgroundStory}</p>
+                <div class="mt-auto">
+                    <span class="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded mb-4 font-bold">${data.behaviorLogic}</span>
+                    <a href="design.html?template=${key}" class="block w-full text-center bg-primary text-white py-2 rounded-lg font-bold hover:bg-blue-600 transition-colors">使用模板</a>
+                </div>
+            </div>
+            `;
+        }
+        
+        grid.innerHTML = html;
+    });
+</script>
 </body>
 </html>

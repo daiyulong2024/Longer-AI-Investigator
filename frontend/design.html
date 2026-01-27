@@ -162,6 +162,7 @@
         </div>
     </div>
 </div>
+<script src="js/templates.js"></script>
 <script src="js/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -169,39 +170,8 @@
             const template = params.get('template');
             const id = params.get('id');
 
-            // 1. Template Definitions
-            const TEMPLATES = {
-                student: {
-                    personaName: "中学生",
-                    behaviorLogic: "理性分析",
-                    backgroundStory: "一名普通的高中二年级学生，面临高考压力，性格内向，害怕由自己做决定。",
-                    scenarioDescription: "你是学校里的一名学生。今天数学考试你不小心作弊被发现了，老师让你放学后去办公室。你现在非常害怕。",
-                    coreQuestion: "放学后，你会怎么做？",
-                    option_A: "直接去办公室认错",
-                    option_B: "逃跑，假装生病回家",
-                    option_C: "找好朋友商量对策"
-                },
-                manager: {
-                    personaName: "企业经理",
-                    behaviorLogic: "理性分析",
-                    backgroundStory: "一位经验丰富的中层管理者，习惯于权衡利弊，以结果为导向。",
-                    scenarioDescription: "你的团队中有一名表现不佳但很努力的员工，正值裁员期，上级要求你提供裁员名单。",
-                    coreQuestion: "你会如何处理这名员工？",
-                    option_A: "直接将其列入裁员名单，保证团队效率",
-                    option_B: "私下沟通，给予最后一次改进机会",
-                    option_C: "向上级争取保留名额，用其他方式分担压力"
-                },
-                doctor: {
-                    personaName: "全科医生",
-                    behaviorLogic: "情感驱动", // 也可以是理性，看设定
-                    backgroundStory: "一位在社区医院工作多年的全科医生，富有同情心，但必须遵守医疗规范。",
-                    scenarioDescription: "一位没钱治病的重症患者请求你开一些廉价但效果不确定的替代药物，如果不治可能会死。",
-                    coreQuestion: "你会怎么做？",
-                    option_A: "严格遵守规定，拒绝开药",
-                    option_B: "出于同情，开具替代药物并承担风险",
-                    option_C: "建议患者去其他机构寻求慈善援助"
-                }
-            };
+            // 1. Use Shared Templates from templates.js (ROLE_TEMPLATES)
+            const TEMPLATES = window.ROLE_TEMPLATES || {};
 
             // 2. Populate Function
             function populateForm(data) {
